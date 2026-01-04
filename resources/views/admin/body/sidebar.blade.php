@@ -129,6 +129,9 @@
        <li>
         <a href="{{ route('all.product') }}" class="tp-link">All Product</a>
        </li>  
+       <li>
+        <a href="{{ route('stock.opname') }}" class="tp-link">Stock Opname</a>
+       </li>
                     
             </ul>
         </div>

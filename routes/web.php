@@ -90,6 +90,11 @@ Route::controller(ProductController::class)->group(function(){
     Route::get('/edit/category/{id}', 'EditCategory');
     Route::post('/update/category', 'UpdateCategory')->name('update.category'); 
     Route::get('/delete/category/{id}', 'DeleteCategory')->name('delete.category');
+    Route::get('/stock/opname', 'StockOpname')->name('stock.opname');
+    Route::post('/store/stock/opname', 'StoreStockOpname')->name('store.stock.opname');
+    Route::get('/stock/opname', [ProductController::class, 'StockOpname'])->name('stock.opname');
+    Route::get('/stock/opname/add', [ProductController::class, 'AddStockOpname'])->name('add.stock.opname');
+    Route::post('/store/stock/opname', [ProductController::class, 'StoreStockOpname'])->name('store.stock.opname');
     
 });
 
