@@ -21,7 +21,6 @@
                                 <div class="fs-22 mb-0 fw-bold text-black">
                                     Rp {{ number_format(\App\Models\Sale::sum('grand_total'), 0, ',', '.') }}
                                 </div>
-                                {{-- Grafik mini di sini sudah dihapus --}}
                             </div>
                         </div>
                     </div>
@@ -33,7 +32,6 @@
                                 <div class="fs-22 mb-0 fw-bold text-black">
                                     Rp {{ number_format(\App\Models\Purchase::sum('grand_total'), 0, ',', '.') }}
                                 </div>
-                                {{-- Grafik mini di sini sudah dihapus --}}
                             </div>
                         </div>
                     </div>
@@ -45,7 +43,6 @@
                                 <div class="fs-22 mb-0 fw-bold text-black">
                                     {{ \App\Models\Sale::count() }} Invoice
                                 </div>
-                                {{-- Grafik mini di sini sudah dihapus --}}
                             </div>
                         </div>
                     </div>
@@ -57,7 +54,6 @@
                                 <div class="fs-22 mb-0 fw-bold text-black">
                                     {{ \App\Models\Purchase::count() }} Invoice
                                 </div>
-                                {{-- Grafik mini di sini sudah dihapus --}}
                             </div>
                         </div>
                     </div>
@@ -67,18 +63,58 @@
         </div> 
 
         <div class="row mt-3">
+            
             <div class="col-md-12 col-xl-8">
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="border border-dark rounded-2 me-2 widget-icons-sections">
-                                <i data-feather="bar-chart" class="widgets-icons"></i>
+                                <i data-feather="list" class="widgets-icons"></i>
                             </div>
-                            <h5 class="card-title mb-0">Grafik Penjualan</h5>
+                            <h5 class="card-title mb-0">Tabel Rekapan Stock Opname</h5>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div id="monthly-sales" class="apex-charts"></div>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Nama Produk</th>
+                                        <th>Sistem</th>
+                                        <th>Fisik</th>
+                                        <th>Selisih</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        // Mengambil 5 data SO terbaru. Pastikan relasi 'product' ada di Model StockOpname
+                                        $all_so = \App\Models\StockOpname::with('product')->latest()->limit(5)->get();
+                                    @endphp
+                                    @forelse($all_so as $so)
+                                    <tr>
+                                        <td>{{ $so->tanggal_so }}</td>
+                                        <td>{{ $so->product->name ?? 'N/A' }}</td>
+                                        <td>{{ $so->stok_sistem }}</td>
+                                        <td>{{ $so->stok_fisik }}</td>
+                                        <td class="{{ $so->selisih < 0 ? 'text-danger' : 'text-success' }} fw-bold">
+                                            {{ $so->selisih }}
+                                        </td>
+                                        <td>
+                                            <span class="badge {{ $so->status == 'Approved' ? 'bg-success' : 'bg-warning' }}">
+                                                {{ $so->status }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center">Belum ada data rekapan.</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -105,7 +141,7 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $recentSales = \App\Models\Sale::with('customer')->latest()->take(7)->get();
+                                        $recentSales = \App\Models\Sale::with('customer')->latest()->take(5)->get();
                                     @endphp
                                     @foreach($recentSales as $sale)
                                     <tr>
@@ -124,6 +160,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
     </div> 
