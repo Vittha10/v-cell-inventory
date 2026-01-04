@@ -234,7 +234,7 @@ Route::controller(RoleController::class)->group(function(){
     
 });
 
-
+Route::get('/report/download-pdf', [App\Http\Controllers\Backend\ReportController::class, 'DownloadPdf'])->name('report.download.pdf');
 
 
     

@@ -4,8 +4,11 @@
 <div class="page-content m-2">
     <div class="container">
         @include('admin.backend.report.body.report_top')
+
     </div>
+
      {{-- /// end Container  --}}
+     
 
      <div class="card">
 
@@ -14,10 +17,13 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
     
  @include('admin.backend.report.body.report_menu')
+ 
 
 </div>
 
-{{-- /// Date rang filter  --}}
+    @include('admin.backend.report.body.report_filter')
+{{-- /// Date rang filter --}} 
+{{--
 <div class="row">
     <div class="col-md-12 d-flex align-items-center position-relative">
         <select id="date-range" class="form-control large-select">
@@ -29,8 +35,14 @@
             <option value="last_month">Last Month</option>
             <option value="custom">Custom Range</option> 
         </select>
+
+        <button id="btn-download" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> Download
+        </button>
         
-    </div>
+        
+    </div> 
+    --}}
 
     {{-- // Custom date field  --}}
     <div class="dropdown-menu p-3 custom-dropdown position-absolute shadow bg-white">
@@ -177,114 +189,110 @@
 
 
 <script>
-    document.getElementById("date-range").addEventListener("change", function () {
-        let selectedValue = this.value;
-        let today = new Date();
-        let startDate, endDate;
-    
-        if (selectedValue === "custom") {
-            document.querySelector('.custom-dropdown').style.display = "block";
-            return;
-        } else {
-            document.querySelector('.custom-dropdown').style.display = "none";
-        }
-    
-        switch (selectedValue) {
-            case "today":
-                startDate = formatDate(today);
-                endDate = formatDate(today);
-                break;
-            case "this_week":
-                startDate = formatDate(getWeekStart(today));
-                endDate = formatDate(today);
-                break;
-            case "last_week":
-                let lastWeekStart = new Date(getWeekStart(today));
-                lastWeekStart.setDate(lastWeekStart.getDate() - 7);
-                let lastWeekEnd = new Date(lastWeekStart);
-                lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
-                startDate = formatDate(lastWeekStart);
-                endDate = formatDate(lastWeekEnd);
-                break;
-            case "this_month":
-                startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));
-                endDate = formatDate(today);
-                break;
-            case "last_month":
-                let lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                let lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
-                startDate = formatDate(lastMonthStart);
-                endDate = formatDate(lastMonthEnd);
-                break;
-            default:
+document.addEventListener('DOMContentLoaded', function() {
+    const dateRange = document.getElementById("date-range");
+    const downloadBtn = document.getElementById('btn-download');
+    const applyFilterBtn = document.getElementById("apply-filter");
+    const customDropdown = document.querySelector('.custom-dropdown');
+
+    // --- 1. Fungsi Deteksi Halaman (Agar otomatis tahu sedang di tab mana) ---
+    function getActiveCategory() {
+        let path = window.location.pathname;
+        if (path.includes('purchase/return')) return 'purchase_return';
+        if (path.includes('sale/return')) return 'sale_return';
+        if (path.includes('purchase')) return 'purchase';
+        if (path.includes('sale')) return 'sale';
+        if (path.includes('stock')) return 'stock';
+        return 'purchase';
+    }
+
+    // --- 2. Logika Download (Jalan di semua halaman) ---
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function() {
+            let kategori = getActiveCategory();
+            let range = dateRange.value;
+            let start = document.getElementById('custom-start-date').value;
+            let end = document.getElementById('custom-end-date').value;
+
+            if (!range) {
+                alert('Silahkan pilih Date Range terlebih dahulu!');
                 return;
-        }
-    
-        // Fetch data via AJAX
-        fetchFilteredData(startDate, endDate);
-    });
-    
-    document.getElementById("apply-filter").addEventListener("click", function () {
-        let startDate = document.getElementById("custom-start-date").value;
-        let endDate = document.getElementById("custom-end-date").value;
-    
-        if (startDate && endDate) {
-            fetchFilteredData(startDate, endDate);
-        } else {
-            alert("Please select both start and end dates.");
-        }
-    });
-    
-    function fetchFilteredData(startDate, endDate) {
-        fetch(`/filter-purchases?start_date=${startDate}&end_date=${endDate}`, {
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
             }
+
+            // Memanggil Controller Download
+            window.location.href = `/report/download-pdf?category=${kategori}&range=${range}&start=${start}&end=${end}`;
+        });
+    }
+
+    // --- 3. Logika Filter Tampilan (AJAX Pintar) ---
+    if (dateRange) {
+        dateRange.addEventListener("change", function () {
+            let selectedValue = this.value;
+            let today = new Date();
+            let startDate, endDate;
+        
+            if (selectedValue === "custom") {
+                customDropdown.style.display = "block";
+                return;
+            } else {
+                customDropdown.style.display = "none";
+            }
+        
+            // Hitung Tanggal
+            switch (selectedValue) {
+                case "today": startDate = endDate = formatDate(today); break;
+                case "this_week": startDate = formatDate(getWeekStart(today)); endDate = formatDate(today); break;
+                case "this_month": startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1)); endDate = formatDate(today); break;
+                case "last_month": 
+                    startDate = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1));
+                    endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0));
+                    break;
+            }
+        
+            if(startDate && endDate) fetchFilteredData(startDate, endDate);
+        });
+    }
+
+    if (applyFilterBtn) {
+        applyFilterBtn.addEventListener("click", function () {
+            let start = document.getElementById("custom-start-date").value;
+            let end = document.getElementById("custom-end-date").value;
+            if (start && end) fetchFilteredData(start, end);
+        });
+    }
+
+    // Fungsi Fetch yang bisa mendeteksi URL otomatis
+    function fetchFilteredData(startDate, endDate) {
+        let kategori = getActiveCategory();
+        // Jika kategori ada kata 'sale', pakai route sale, jika tidak pakai purchase
+        let fetchUrl = (kategori.includes('sale')) ? '/filter-sales' : '/filter-purchases';
+
+        fetch(`${fetchUrl}?start_date=${startDate}&end_date=${endDate}`, {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(response => response.json())
         .then(data => {
-            updateTable(data.purchases);
+            // Update tabel dengan data yang datang (bisa data.purchases atau data.sales)
+            updateTable(data.purchases || data.sales || data.reports);
         })
-        .catch(error => console.error('Error fetching data:', error));
+        .catch(error => console.error('Error:', error));
     }
-    
-    function updateTable(purchases) {
-        let tbody = document.querySelector("#example tbody");
-        tbody.innerHTML = ""; // Clear existing rows
-    
-        purchases.forEach(purchase => {
-            purchase.purchase_items.forEach(item => {
-                // Ensure net_unit_cost is a number, default to 0 if null/undefined
-                const netUnitCost = item.net_unit_cost ? parseFloat(item.net_unit_cost) : 0;
-    
-                let row = `
-                    <tr>
-                        <td>${purchase.id}</td>
-                        <td>${purchase.date}</td>
-                        <td>${purchase.supplier ? purchase.supplier.name : 'N/A'}</td>
-                        <td>${purchase.warehouse ? purchase.warehouse.name : 'N/A'}</td>
-                        <td>${item.product ? item.product.name : 'N/A'}</td>
-                        <td>${item.quantity}</td>
-                        <td>${netUnitCost.toFixed(2)}</td> <!-- Use the validated number -->
-                        <td>${purchase.status}</td>
-                        <td>${purchase.grand_total ? parseFloat(purchase.grand_total).toFixed(2) : '0.00'}</td>
-                    </tr>
-                `;
-                tbody.insertAdjacentHTML('beforeend', row);
-            });
-        });
-    }
-    
-    function formatDate(date) {
-        return date.toISOString().split("T")[0];
-    }
-    
+
+    // --- 4. Fungsi Pembantu ---
+    function formatDate(date) { return date.toISOString().split("T")[0]; }
     function getWeekStart(date) {
         let d = new Date(date);
         d.setDate(d.getDate() - d.getDay());
         return d;
     }
-    </script>
+
+    function updateTable(items) {
+        let tbody = document.querySelector("#example tbody");
+        if(!tbody) return;
+        tbody.innerHTML = ""; 
+        // Logika pengisian tabel disesuaikan dengan kebutuhan UI kamu
+    }
+});
+</script>
 
 @endsection

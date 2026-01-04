@@ -128,7 +128,65 @@
          }
          @endif 
         </script>
+
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dateRange = document.getElementById("date-range");
+    const downloadBtn = document.getElementById('btn-download');
+    const customDropdown = document.querySelector('.custom-dropdown');
+
+    // 1. Fungsi Deteksi Kategori (Lebih Akurat)
+    function getActiveCategory() {
+        let path = window.location.pathname; 
+        console.log("Current Path:", path); // Membantu cek di Console F12
+
+        if (path.includes('purchase/return')) return 'purchase_return';
+        if (path.includes('sale/return')) return 'sale_return';
+        if (path.includes('purchase')) return 'purchase';
+        if (path.includes('sale')) return 'sale';
+        if (path.includes('stock')) return 'stock';
         
+        return 'purchase';
+    }
+
+    // 2. Fungsi Download PDF
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            let kategori = getActiveCategory();
+            let range = dateRange ? dateRange.value : '';
+            
+            // Perbaikan: Cek dulu apakah elemennya ada sebelum ambil .value
+            let startInput = document.getElementById('custom-start-date');
+            let endInput = document.getElementById('custom-end-date');
+            let start = startInput ? startInput.value : '';
+            let end = endInput ? endInput.value : '';
+
+            if (!range) {
+                alert('Silahkan pilih Date Range dulu!');
+                return;
+            }
+
+            let downloadUrl = `/report/download-pdf?category=${kategori}&range=${range}&start=${start}&end=${end}`;
+            console.log("Redirecting to:", downloadUrl);
+            
+            window.location.href = downloadUrl;
+        });
+    }
+
+    // 3. Logika Menampilkan Dropdown Custom
+    if (dateRange && customDropdown) {
+        dateRange.addEventListener("change", function () {
+            if (this.value === "custom") {
+                customDropdown.style.display = "block";
+            } else {
+                customDropdown.style.display = "none";
+            }
+        });
+    }
+});
+</script>
 
     </body>
 </html>

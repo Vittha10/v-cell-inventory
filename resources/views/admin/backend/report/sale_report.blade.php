@@ -16,7 +16,10 @@
       @include('admin.backend.report.body.report_menu')
 </div>
 
+@include('admin.backend.report.body.report_filter')
+
 {{-- /// Date rang filter  --}}
+{{--  
 <div class="row">
     <div class="col-md-12 d-flex align-items-center position-relative">
         <select id="date-range" class="form-control large-select">
@@ -30,6 +33,7 @@
         </select>
         
     </div>
+    --}}
 
     {{-- // Custom date field  --}}
     <div class="dropdown-menu p-3 custom-dropdown position-absolute shadow bg-white">
