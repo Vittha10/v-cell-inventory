@@ -69,6 +69,13 @@ class ProductController extends Controller
     }
 
     public function StoreProduct(Request $request){
+        $request->validate([
+        'code' => 'required|unique:products,code', 
+        'name' => 'required',
+    ], [
+        'code.unique' => 'Kode SKU ini sudah digunakan oleh produk lain!',
+        'code.required' => 'Kode SKU tidak boleh kosong!',
+    ]);
         $product = Product::create([
             'name' => $request->name,
             'code' => $request->code,
