@@ -56,12 +56,6 @@
                                                 <small class="text-danger">{{ $message }}</small>
                                                 @enderror
                                             </div>
-
-                                            <div class="form-group d-flex mb-3"> 
-                                                <div class="col-sm-6 text-end">
-                                                    <a class='text-muted fs-14' href='{{ route('password.request') }}'>Forgot password?</a>                                     
-                                                </div>
-                                            </div>
                                             
                                             <div class="form-group mb-0 row">
                                                 <div class="col-12">
@@ -71,12 +65,6 @@
                                                 </div>
                                             </div>
                                         </form>
-
-                                        <div class="saprator my-4"><span>or sign in with</span></div>
-
-                                        <div class="text-center text-muted mb-4">
-                                            <p class="mb-0">Don't have an account ?<a class='text-primary ms-2 fw-medium' href='{{ route('register') }}'>Sign up</a></p>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
