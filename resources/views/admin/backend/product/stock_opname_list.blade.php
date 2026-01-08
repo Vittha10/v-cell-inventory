@@ -18,6 +18,7 @@
                                 <th>(+) / (-)</th>
                                 <th>Stok Akhir</th>
                                 <th>Status</th>
+                                <th>Aksi</th> </tr>
                             </tr>
                             </thead>
                             <tbody>
@@ -27,6 +28,7 @@
                                     <td> {{ $item->tanggal_so }} </td>
                                     <td> {{ $item->product_name }} </td>
                                     <td> {{ $item->stok_sistem }} </td>
+
                                     <td> 
                                         <span class="text-success">+{{ $item->qty_tambah }}</span> / 
                                         <span class="text-danger">-{{ $item->qty_kurang }}</span> 
@@ -36,6 +38,14 @@
                                         <span class="badge {{ $item->status == 'Approved' ? 'bg-success' : ($item->status == 'Requested' ? 'bg-warning' : 'bg-danger') }}">
                                             {{ $item->status }}
                                         </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('edit.stock.opname', $item->id) }}" class="btn btn-info btn-sm" title="Edit">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="{{ route('delete.stock.opname', $item->id) }}" class="btn btn-danger btn-sm" id="delete" title="Delete">
+                                            <i class="fas fa-trash-alt"></i> Hapus
+                                        </a>
                                     </td>
                                 </tr>
                                 @endforeach

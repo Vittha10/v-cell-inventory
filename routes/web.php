@@ -95,7 +95,9 @@ Route::controller(ProductController::class)->group(function(){
     Route::get('/stock/opname', [ProductController::class, 'StockOpname'])->name('stock.opname');
     Route::get('/stock/opname/add', [ProductController::class, 'AddStockOpname'])->name('add.stock.opname');
     Route::post('/store/stock/opname', [ProductController::class, 'StoreStockOpname'])->name('store.stock.opname');
-    
+    Route::get('/stock/opname/edit/{id}', 'EditStockOpname')->name('edit.stock.opname');
+    Route::post('/stock/opname/update', 'UpdateStockOpname')->name('update.stock.opname');
+    Route::get('/stock/opname/delete/{id}', 'DeleteStockOpname')->name('delete.stock.opname');
 });
 
 Route::controller(ProductController::class)->group(function(){

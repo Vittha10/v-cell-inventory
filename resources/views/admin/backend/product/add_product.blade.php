@@ -122,9 +122,7 @@
                <div class="form-group w-100">
                   <label class="form-label" for="formBasic">Status : <span class="text-danger">*</span></label>
                   <select name="status" id="status" class="form-control form-select">
-                     <option selected="">Select Status</option>
                      <option value="Received">Received</option>
-                     <option value="Pending">Pending</option> 
                   </select>
                </div>
             </div>
