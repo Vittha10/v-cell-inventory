@@ -80,6 +80,7 @@
                  <th>Product</th>
                  <th>Stock</th>
                  <th>Action</th>
+                 <th> Qty </th>
               </tr>
            </thead>
            <tbody>

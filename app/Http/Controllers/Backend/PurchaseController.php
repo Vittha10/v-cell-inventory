@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
-use App\Models\Product; 
-use App\Models\Supplier; 
+use App\Models\Product;
+use App\Models\Supplier;
 use App\Models\WareHouse;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
-use App\Models\Purchase; 
-use App\Models\PurchaseItem; 
+use App\Models\Purchase;
+use App\Models\PurchaseItem;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -19,16 +19,16 @@ class PurchaseController extends Controller
 {
     public function AllPurchase(){
         $allData = Purchase::orderBy('id','desc')->get();
-        return view('admin.backend.purchase.all_purchase',compact('allData')); 
+        return view('admin.backend.purchase.all_purchase',compact('allData'));
     }
-    // End Method  
+    // End Method
 
     public function AddPurchase(){
         $suppliers = Supplier::all();
         $warehouses = WareHouse::all();
         return view('admin.backend.purchase.add_purchase',compact('suppliers','warehouses'));
     }
-     // End Method 
+     // End Method
 
     public function PurchaseProductSearch(Request $request){
         $query = $request->input('query');
@@ -46,9 +46,9 @@ class PurchaseController extends Controller
         ->get();
 
         return response()->json($products);
-    
+
     }
-     // End Method 
+     // End Method
 
     public function StorePurchase(Request $request){
 
@@ -72,10 +72,10 @@ class PurchaseController extends Controller
             'shipping' => $request->shipping ?? 0,
             'status' => $request->status,
             'note' => $request->note,
-            'grand_total' => 0, 
+            'grand_total' => 0,
         ]);
 
-        /// Store Purchase Items & Update Stock 
+        /// Store Purchase Items & Update Stock
     foreach($request->products as $productData){
         $product = Product::findOrFail($productData['id']);
         $netUnitCost = $productData['net_unit_cost'] ?? $product->price;
@@ -94,11 +94,13 @@ class PurchaseController extends Controller
             'stock' => $product->product_qty + $productData['quantity'],
             'quantity' => $productData['quantity'],
             'discount' => $productData['discount'] ?? 0,
-            'subtotal' => $subtotal, 
+            'subtotal' => $subtotal,
         ]);
 
-        $product->increment('product_qty', $productData['quantity']); 
+        if ($request->status === 'Received') {
+        $product->increment('product_qty', $productData['quantity']);
     }
+}
 
     $purchase->update(['grand_total' => $grandTotal + $request->shipping - $request->discount]);
 
@@ -107,15 +109,15 @@ class PurchaseController extends Controller
     $notification = array(
         'message' => 'Purchase Stored Successfully',
         'alert-type' => 'success'
-     ); 
-     return redirect()->route('all.purchase')->with($notification);  
+     );
+     return redirect()->route('all.purchase')->with($notification);
 
     } catch (\Exception $e) {
         DB::rollBack();
         return response()->json(['error' => $e->getMessage()], 500);
-      } 
+      }
     }
-    // End Method 
+    // End Method
 
 
     public function EditPurchase($id){
@@ -124,89 +126,87 @@ class PurchaseController extends Controller
         $warehouses = WareHouse::all();
         return view('admin.backend.purchase.edit_purchase',compact('editData','suppliers','warehouses'));
     }
-    // End Method 
+    // End Method
 
-    public function UpdatePurchase(Request $request,$id){
+    public function UpdatePurchase(Request $request, $id){
+    $request->validate([
+        'date' => 'required|date',
+        'status' => 'required',
+    ]);
 
-        $request->validate([
-            'date' => 'required|date',
-            'status' => 'required', 
-        ]); 
+    DB::beginTransaction();
+    try {
+        $purchase = Purchase::findOrFail($id);
+        $oldStatus = $purchase->status; // Simpan status lama
 
-        DB::beginTransaction(); 
-
-        try {
-
-            $purchase = Purchase::findOrFail($id);
-
-            $purchase->update([
-                'date' => $request->date,
-                'warehouse_id' => $request->warehouse_id,
-                'supplier_id' => $request->supplier_id,
-                'discount' => $request->discount ?? 0,
-                'shipping' => $request->shipping ?? 0,
-                'status' => $request->status,
-                'note' => $request->note,
-                'grand_total' => $request->grand_total, 
-            ]);
-
-        /// Get Old Purchase Items 
-        $oldPurchaseItems = PurchaseItem::where('purchase_id',$purchase->id)->get();
-
-        /// Loop for old purchase items and decrement product qty
-         foreach($oldPurchaseItems as $oldItem){
-            $product = Product::find($oldItem->product_id);
-            if ($product) {
-                $product->decrement('product_qty',$oldItem->quantity);
-                // Decrement old quantity 
+        // 1. Ambil item lama untuk mengembalikan stok (HANYA JIKA status lama Received)
+        $oldPurchaseItems = PurchaseItem::where('purchase_id', $purchase->id)->get();
+        if ($oldStatus === 'Received') {
+            foreach($oldPurchaseItems as $oldItem){
+                $product = Product::find($oldItem->product_id);
+                if ($product) {
+                    $product->decrement('product_qty', $oldItem->quantity);
+                }
             }
-         }
+        }
 
-         /// Delete old Purchase Items 
-         PurchaseItem::where('purchase_id',$purchase->id)->delete();
-
-         // loop for new products and insert new purchase items
-
-        foreach($request->products as $product_id => $productData){
-        PurchaseItem::create([
-            'purchase_id' => $purchase->id,
-            'product_id' => $product_id,
-            'net_unit_cost' => $productData['net_unit_cost'],
-            'stock' => $productData['stock'],
-            'quantity' => $productData['quantity'],
-            'discount' => $productData['discount'] ?? 0,
-            'subtotal' => $productData['subtotal'],  
+        // 2. Update data Purchase utama
+        $purchase->update([
+            'date' => $request->date,
+            'warehouse_id' => $request->warehouse_id,
+            'supplier_id' => $request->supplier_id,
+            'discount' => $request->discount ?? 0,
+            'shipping' => $request->shipping ?? 0,
+            'status' => $request->status,
+            'note' => $request->note,
+            'grand_total' => $request->grand_total,
         ]);
 
-        /// Update product stock by incremeting new quantity 
-        $product = Product::find($product_id);
-        if ($product) {
-            $product->increment('product_qty',$productData['quantity']);
-            // Increment new quantity
-         } 
-       }
+        // 3. Hapus item lama dan simpan yang baru
+        PurchaseItem::where('purchase_id', $purchase->id)->delete();
 
-       DB::commit();
+        $grandTotal = 0;
+        foreach($request->products as $product_id => $productData) {
+            $subtotal = ($productData['net_unit_cost'] * $productData['quantity']) - ($productData['discount'] ?? 0);
+            $grandTotal += $subtotal;
 
-       $notification = array(
-           'message' => 'Purchase Updated Successfully',
-           'alert-type' => 'success'
-        ); 
-        return redirect()->route('all.purchase')->with($notification);  
+            PurchaseItem::create([
+                'purchase_id' => $purchase->id,
+                'product_id' => $product_id,
+                'net_unit_cost' => $productData['net_unit_cost'],
+                'stock' => $productData['stock'],
+                'quantity' => $productData['quantity'],
+                'discount' => $productData['discount'] ?? 0,
+                'subtotal' => $subtotal,
+            ]);
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => $e->getMessage()], 500);
-          }   
+        if ($request->status === 'Received') {
+                $product = Product::find($product_id);
+                if ($product) {
+                    $product->increment('product_qty', $productData['quantity']);
+                }
+            }
+        }
+
+        // Update total akhir
+        $purchase->update(['grand_total' => $grandTotal + $request->shipping - $request->discount]);
+
+        DB::commit();
+        return redirect()->route('all.purchase')->with(['message' => 'Purchase Updated Successfully', 'alert-type' => 'success']);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => $e->getMessage()], 500);
     }
-    // End Method 
+}
+    // End Method
 
     public function DetailsPurchase($id){
         $purchase = Purchase::with(['supplier','purchaseItems.product'])->find($id);
         return view('admin.backend.purchase.purchase_details',compact('purchase'));
 
     }
-     // End Method 
+     // End Method
 
     public function InvoicePurchase($id){
         $purchase = Purchase::with(['supplier','warehouse','purchaseItems.product'])->find($id);
@@ -215,7 +215,7 @@ class PurchaseController extends Controller
         return $pdf->download('purchase_'.$id.'.pdf');
 
     }
-     // End Method 
+     // End Method
 
     public function DeletePurchase($id){
         try {
@@ -236,15 +236,16 @@ class PurchaseController extends Controller
           $notification = array(
             'message' => 'Purchase Deleted Successfully',
             'alert-type' => 'success'
-         ); 
-         return redirect()->route('all.purchase')->with($notification);  
-            
+         );
+         return redirect()->route('all.purchase')->with($notification);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
-          }  
+          }
     }
-    // End Method 
+
+    // End Method
 
 
 }

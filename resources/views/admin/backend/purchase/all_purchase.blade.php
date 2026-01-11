@@ -53,7 +53,7 @@
 
         {{-- 1. Mengubah Grand Total menjadi Jumlah Barang (Stok yang masuk) --}}
         <td class="fw-bold text-primary">
-    {{ $item->purchase_items ? $item->purchase_items->sum('quantity') : 0 }} Item
+    {{ $item->purchaseItems->sum('quantity') }} Item
 </td>
 
         {{-- 2. BARIS PAYMENT (CASH) SUDAH DIHAPUS DI SINI --}}
