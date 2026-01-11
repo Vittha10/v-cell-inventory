@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Return Purchase Invoice</title>
+    <title>Purchase Invoice</title>
     <style>
         * {
             margin: 0;
@@ -23,93 +23,64 @@
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            page-break-inside: avoid;
         }
         .invoice-header {
-            background-color: #0d6efd; /* Fallback for gradient */
-            background: linear-gradient(135deg, #0d6efd, #17a2b8);
+            background: #0d6efd;
             color: #fff;
             padding: 15px;
             text-align: center;
             border-radius: 8px 8px 0 0;
             margin-bottom: 20px;
         }
-        .invoice-header h2 {
+        .invoice-header h5 {
             font-size: 18px;
             font-weight: bold;
             margin: 0;
+            text-transform: uppercase;
         }
         .info-section {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        .info-section td {
+        .info-box {
             width: 33.33%;
             padding: 15px;
             vertical-align: top;
             background: #f8f9fa;
             border: 1px solid #e9ecef;
-            border-radius: 6px;
-            margin: 0 5px;
         }
         .info-box h5 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             margin-bottom: 10px;
             color: #0d6efd;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
         }
         .info-box p {
-            margin: 5px 0;
-            font-size: 12px;
-        }
-        .info-box p strong {
-            color: #555;
+            margin: 3px 0;
+            font-size: 11px;
         }
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .table th, .table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            font-size: 12px;
+            margin-top: 10px;
         }
         .table th {
             background: #e9ecef;
+            border: 1px solid #ddd;
+            padding: 10px 8px;
+            text-align: left;
             font-weight: bold;
-            color: #333;
         }
-        .table tbody tr:nth-child(even) {
-            background: #f8f9fa;
+        .table td {
+            border: 1px solid #ddd;
+            padding: 10px 8px;
+            vertical-align: top;
         }
-        .summary-table {
-            width: 50%;
-            margin-left: auto;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        .summary-table td {
-            padding: 5px;
-            text-align: right;
-            font-weight: bold;
-            border: none;
-            font-size: 12px;
-        }
-        @page {
-            margin: 20mm;
-        }
-        @media print {
-            .invoice-container {
-                border: none;
-                padding: 0;
-            }
-            .info-section td {
-                background: none;
-                border: 1px solid #ddd;
-            }
+        .text-center {
+            text-align: center;
         }
     </style>
 </head>
@@ -123,60 +94,55 @@
             <tr>
                 <td class="info-box">
                     <h5>Supplier Info</h5>
-<p><strong>Name:</strong> {{ $purchase->supplier->name }} </p>
-<p><strong>Email:</strong> {{ $purchase->supplier->email }}</p>
-<p><strong>Phone:</strong> {{ $purchase->supplier->phone }} </p>
+                    <p><strong>Name:</strong> {{ $purchase->supplier->name }}</p>
+                    <p><strong>Email:</strong> {{ $purchase->supplier->email }}</p>
+                    <p><strong>Phone:</strong> {{ $purchase->supplier->phone }}</p>
                 </td>
                 <td class="info-box">
                     <h5>Warehouse</h5>
-                    <p>{{ $purchase->warehouse->name }} </p>
+                    <p><strong>Location:</strong></p>
+                    <p>{{ $purchase->warehouse->name }}</p>
                 </td>
                 <td class="info-box">
                     <h5>Purchase Info</h5>
-<p><strong>Date:</strong> {{ $purchase->date }} </p>
-<p><strong>Status:</strong> {{ $purchase->status }} </p>
-<p><strong>Grand Total:</strong> Rp {{ number_format($purchase->grand_total, 2)  }} </p>
+                    <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($purchase->date)->format('d M Y') }}</p>
+                    <p><strong>Status:</strong>
+                        <span style="color: {{ $purchase->status == 'Received' ? 'green' : 'orange' }}">
+                            {{ $purchase->status }}
+                        </span>
+                    </p>
                 </td>
             </tr>
         </table>
 
-        <h5 style="font-weight: bold; margin: 20px 0 10px;">Order Summary</h5>
+        <h5 style="font-weight: bold; margin: 10px 0;">Order Summary</h5>
         <table class="table">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Net Unit Cost</th>
-                    <th>Discount</th>
-                    <th>Subtotal</th>
+                    <th style="width: 8%; text-align: center;">#</th>
+                    <th>Product Description</th>
+                    <th style="width: 20%; text-align: center;">Quantity</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($purchase->purchaseItems as $key => $item )
-                    <tr>
-                <td>{{ $key + 1 }}</td>
-                <td>{{ $item->product->name }}</td>
-                <td>{{ $item->quantity }}</td>
-                <td>Rp {{ number_format($item->net_unit_cost,2)  }}</td>
-                <td>Rp {{ number_format($item->discount,2)  }}</td>
-                <td>Rp {{ number_format($item->subtotal,2)  }}</td>
-                    </tr>
+                @foreach ($purchase->purchaseItems as $key => $item)
+                <tr>
+                    <td class="text-center">{{ $key + 1 }}</td>
+                    <td>
+                        <strong>{{ $item->product->name }}</strong><br>
+                        <small style="color: #666;">Code: {{ $item->product->code }}</small>
+                    </td>
+                    <td class="text-center">
+                        {{ $item->quantity }}
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <table class="summary-table">
-            <tr>
-                <td><strong>Total Discount:</strong> Rp {{ number_format($purchase->discount,2)  }} </td>
-            </tr>
-            <tr>
-                <td><strong>Shipping Cost:</strong> Rp {{ number_format($purchase->shipping,2)  }} </td>
-            </tr>
-            <tr>
-                <td><strong>Grand Total:</strong> Rp {{ number_format($purchase->grand_total,2)  }} </td>
-            </tr>
-        </table>
+        <div style="margin-top: 30px; font-size: 10px; color: #999; text-align: center;">
+            <p>Generated on: {{ date('d-m-Y H:i:s') }}</p>
+        </div>
     </div>
 </body>
 </html>

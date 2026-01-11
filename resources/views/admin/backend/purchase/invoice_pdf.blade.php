@@ -135,7 +135,6 @@
                     <h5>Purchase Info</h5>
 <p><strong>Date:</strong> {{ $purchase->date }} </p>
 <p><strong>Status:</strong> {{ $purchase->status }} </p>
-<p><strong>Grand Total:</strong> Rp {{ number_format($purchase->grand_total, 2)  }} </p>
                 </td>
             </tr>
         </table>
@@ -147,9 +146,6 @@
                     <th>#</th>
                     <th>Product Name</th>
                     <th>Quantity</th>
-                    <th>Net Unit Cost</th>
-                    <th>Discount</th>
-                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
@@ -158,25 +154,11 @@
                 <td>{{ $key + 1 }}</td>
                 <td>{{ $item->product->name }}</td>
                 <td>{{ $item->quantity }}</td>
-                <td>Rp {{ number_format($item->net_unit_cost,2)  }}</td>
-                <td>Rp {{ number_format($item->discount,2)  }}</td>
-                <td>Rp {{ number_format($item->subtotal,2)  }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <table class="summary-table">
-            <tr>
-                <td><strong>Total Discount:</strong> Rp {{ number_format($purchase->discount,2)  }} </td>
-            </tr>
-            <tr>
-                <td><strong>Shipping Cost:</strong> Rp {{ number_format($purchase->shipping,2)  }} </td>
-            </tr>
-            <tr>
-                <td><strong>Grand Total:</strong> Rp {{ number_format($purchase->grand_total,2)  }} </td>
-            </tr>
-        </table>
     </div>
 </body>
 </html>

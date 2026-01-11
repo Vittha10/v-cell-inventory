@@ -33,8 +33,6 @@
                     <th width="15%">Warehouse</th>
                     <th width="15%">Category</th>
                     <th width="10%">Qty</th>
-                    <th width="15%">Unit Price</th>
-                    <th width="15%">Grand Total</th>
                 </tr>
             @else
                 <tr>
@@ -42,13 +40,10 @@
                     <th width="18%">Supplier/Customer</th>
                     <th width="20%">Product</th>
                     <th width="10%">Qty</th>
-                    <th width="20%">Unit Price</th>
-                    <th width="20%">Grand Total</th>
                 </tr>
             @endif
         </thead>
         <tbody>
-            @php RptotalSeluruhnya = 0; @endphp
 
             @foreach($reports as $report)
                 @if($category == 'stock')

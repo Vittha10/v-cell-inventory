@@ -128,7 +128,7 @@ class PurchaseController extends Controller
     }
     // End Method
 
-    public function UpdatePurchase(Request $request, $id){
+   public function UpdatePurchase(Request $request, $id) {
     $request->validate([
         'date' => 'required|date',
         'status' => 'required',
@@ -137,66 +137,70 @@ class PurchaseController extends Controller
     DB::beginTransaction();
     try {
         $purchase = Purchase::findOrFail($id);
-        $oldStatus = $purchase->status; // Simpan status lama
+        $oldStatus = $purchase->status;
 
-        // 1. Ambil item lama untuk mengembalikan stok (HANYA JIKA status lama Received)
-        $oldPurchaseItems = PurchaseItem::where('purchase_id', $purchase->id)->get();
+        // 1. Kembalikan stok lama HANYA jika status sebelumnya adalah 'Received'
+        $oldItems = PurchaseItem::where('purchase_id', $purchase->id)->get();
         if ($oldStatus === 'Received') {
-            foreach($oldPurchaseItems as $oldItem){
-                $product = Product::find($oldItem->product_id);
-                if ($product) {
-                    $product->decrement('product_qty', $oldItem->quantity);
-                }
+            foreach ($oldItems as $oldItem) {
+                Product::where('id', $oldItem->product_id)->decrement('product_qty', $oldItem->quantity);
             }
         }
 
-        // 2. Update data Purchase utama
+        // 2. Hapus detail item lama
+        PurchaseItem::where('purchase_id', $purchase->id)->delete();
+
+        // 3. Simpan item baru & Hitung Grand Total otomatis
+        $calculatedGrandTotal = 0;
+
+        foreach ($request->products as $productData) {
+            $product = Product::findOrFail($productData['product_id']);
+            // Ambil harga dari database karena di form sudah dihapus
+            $unitCost = $product->price;
+            $subtotal = $unitCost * $productData['quantity'];
+            $calculatedGrandTotal += $subtotal;
+
+            PurchaseItem::create([
+                'purchase_id' => $purchase->id,
+                'product_id' => $productData['product_id'],
+                'net_unit_cost' => $unitCost,
+                'quantity' => $productData['quantity'],
+                'subtotal' => $subtotal,
+                'discount' => 0,
+                'stock' => $product->product_qty, // Stock saat ini
+            ]);
+
+            // 4. Update stok produk HANYA jika status baru adalah 'Received'
+            if ($request->status === 'Received') {
+                $product->increment('product_qty', $productData['quantity']);
+            }
+        }
+
+        // 5. Update data Purchase utama dengan total yang sudah dihitung
+        $shipping = $request->shipping ?? 0;
+        $discount = $request->discount ?? 0;
+        $finalTotal = ($calculatedGrandTotal + $shipping) - $discount;
+
         $purchase->update([
             'date' => $request->date,
             'warehouse_id' => $request->warehouse_id,
             'supplier_id' => $request->supplier_id,
-            'discount' => $request->discount ?? 0,
-            'shipping' => $request->shipping ?? 0,
             'status' => $request->status,
             'note' => $request->note,
-            'grand_total' => $request->grand_total,
+            'shipping' => $shipping,
+            'discount' => $discount,
+            'grand_total' => $finalTotal, // Nilai ini sekarang dijamin tidak NULL
         ]);
 
-        // 3. Hapus item lama dan simpan yang baru
-        PurchaseItem::where('purchase_id', $purchase->id)->delete();
-
-        $grandTotal = 0;
-        foreach($request->products as $product_id => $productData) {
-            $subtotal = ($productData['net_unit_cost'] * $productData['quantity']) - ($productData['discount'] ?? 0);
-            $grandTotal += $subtotal;
-
-            PurchaseItem::create([
-                'purchase_id' => $purchase->id,
-                'product_id' => $product_id,
-                'net_unit_cost' => $productData['net_unit_cost'],
-                'stock' => $productData['stock'],
-                'quantity' => $productData['quantity'],
-                'discount' => $productData['discount'] ?? 0,
-                'subtotal' => $subtotal,
-            ]);
-
-        if ($request->status === 'Received') {
-                $product = Product::find($product_id);
-                if ($product) {
-                    $product->increment('product_qty', $productData['quantity']);
-                }
-            }
-        }
-
-        // Update total akhir
-        $purchase->update(['grand_total' => $grandTotal + $request->shipping - $request->discount]);
-
         DB::commit();
-        return redirect()->route('all.purchase')->with(['message' => 'Purchase Updated Successfully', 'alert-type' => 'success']);
+        return redirect()->route('all.purchase')->with([
+            'message' => 'Purchase Updated Successfully',
+            'alert-type' => 'success'
+        ]);
 
     } catch (\Exception $e) {
         DB::rollBack();
-        return response()->json(['error' => $e->getMessage()], 500);
+        return back()->with(['message' => 'Error: ' . $e->getMessage(), 'alert-type' => 'error']);
     }
 }
     // End Method
