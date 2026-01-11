@@ -7,11 +7,11 @@
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
         .header h1 { margin: 0; padding: 0; font-size: 20px; }
         .header h2 { margin: 5px 0; font-size: 16px; color: #555; }
-        
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
         th, td { border: 1px solid #000; padding: 8px; word-wrap: break-word; }
         th { background-color: #f2f2f2; font-weight: bold; text-align: center; }
-        
+
         .text-right { text-align: right; }
         .text-center { text-align: center; }
         .footer-total { background-color: #eee; font-weight: bold; }
@@ -48,11 +48,11 @@
             @endif
         </thead>
         <tbody>
-            @php $totalSeluruhnya = 0; @endphp
-            
+            @php RptotalSeluruhnya = 0; @endphp
+
             @foreach($reports as $report)
                 @if($category == 'stock')
-                    @php 
+                    @php
                         // 1. QTY (Sudah Berhasil)
                         $qty = $report->product_qty ?? 0;
 
@@ -66,7 +66,7 @@
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td>{{ $report->name }}</td>
                         <td class="text-center">{{ $report->warehouse->name ?? '-' }}</td>
-                        
+
                         {{-- FIX KATEGORI: Cek nama kolom category_name atau name --}}
                         <td class="text-center">
                             {{ $report->category->category_name ?? $report->category->name ?? '-' }}
@@ -85,7 +85,7 @@
                     @endphp
 
                     @foreach($items as $item)
-                        @php 
+                        @php
                             $unitPrice = $item->net_unit_cost ?? ($item->unit_price ?? 0);
                             $qty = $item->quantity ?? 0;
                             $subTotal = $qty * $unitPrice;

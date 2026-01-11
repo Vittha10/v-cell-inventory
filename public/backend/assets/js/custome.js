@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function(){
         let warehouse_id = warehouseDropdown.value;
 
         if (!warehouse_id ) {
-            warehouseError.classList.remove('d-none'); 
+            warehouseError.classList.remove('d-none');
             productList.innerHTML = "";
             return;
         } else{
-            warehouseError.classList.add('d-none'); 
+            warehouseError.classList.add('d-none');
         }
         if (query.length > 1) {
             fetchProducts(query,warehouse_id);
@@ -41,26 +41,26 @@ document.addEventListener("DOMContentLoaded", function(){
                             <span class="mdi mdi-text-search"></span>
                             ${product.code} - ${product.name}
                             </a> `;
-                            productList.innerHTML += item; 
+                            productList.innerHTML += item;
                            // console.log(item);
                     });
 
-        // add event listener for product selection 
+        // add event listener for product selection
         document.querySelectorAll(".product-item").forEach(item => {
             item.addEventListener("click", function(e) {
                 e.preventDefault();
                 addProductToTable(this);
             });
         });
- 
+
         } else {
             productList.innerHTML = '<p class="text-muted">No Product Found</p>'
         }
     });
-        
+
     }
 
-    ///// Add Product in to the table 
+    ///// Add Product in to the table
     function addProductToTable(productElement) {
         let productId = productElement.getAttribute("data-id");
         let productCode = productElement.getAttribute("data-code");
@@ -74,22 +74,13 @@ document.addEventListener("DOMContentLoaded", function(){
               return;
         }
 
-      let row = `
+       let row = `
       <tr data-id="${productId}">
           <td>
-              ${productCode} - ${productName} 
-              <button type="button" class="btn btn-primary btn-sm edit-discount-btn"
-                  data-id="${productId}" 
-                  data-name="${productName}" 
-                  data-cost="${netUnitCost}"
-                  data-bs-toggle="modal">
-                  <span class="mdi mdi-book-edit "></span>
-              </button>
+              ${productCode} - ${productName}
               <input type="hidden" name="products[${productId}][id]" value="${productId}">
               <input type="hidden" name="products[${productId}][name]" value="${productName}">
               <input type="hidden" name="products[${productId}][code]" value="${productCode}">
-          </td>
-          <td>${netUnitCost.toFixed(2)}
               <input type="hidden" name="products[${productId}][cost]" value="${netUnitCost}">
           </td>
           <td style="color:#ffc121">${stock}</td>
@@ -101,27 +92,28 @@ document.addEventListener("DOMContentLoaded", function(){
                       data-cost="${netUnitCost}" style="width: 30px;">
                   <button class="btn btn-outline-secondary increment-qty" type="button">+</button>
               </div>
+              <input type="hidden" class="discount-input" name="products[${productId}][discount]" value="0">
+              <span class="subtotal d-none">${netUnitCost.toFixed(2)}</span>
           </td>
-          <td>
-              <input type="number" class="form-control discount-input"
-                  name="products[${productId}][discount]" value="0" min="0" style="width:100px">
+          <td class="text-center">
+              <button class="btn btn-danger btn-sm remove-product">
+                  <span class="mdi mdi-delete-circle mdi-18px"></span>
+              </button>
           </td>
-          <td class="subtotal">${netUnitCost.toFixed(2)}</td>
-          <td><button class="btn btn-danger btn-sm remove-product"><span class="mdi mdi-delete-circle mdi-18px"></span></button></td>
       </tr>
   `;
 
         orderItemsTableBody.innerHTML += row;
         productList.innerHTML = "";
-        productSearchInput.value = ""; 
+        productSearchInput.value = "";
 
         updateEvents();
         updateGrandTotal()
-        
+
   }
 
 
-  
+
   function updateEvents() {
     document.querySelectorAll(".qty-input, .discount-input").forEach(input => {
           input.addEventListener("input", function () {
@@ -219,27 +211,27 @@ function updateGrandTotal() {
 }
 
 
-/// Manage Due for sale page 
+/// Manage Due for sale page
 function updateDueAmount() {
     let grandTotal = parseFloat(document.querySelector("input[name='grand_total']").value) || 0;
     let paidAmount = parseFloat(document.querySelector("input[name='paid_amount']").value) || 0;
-    // new add full paid functionality 
+    // new add full paid functionality
     let fullPaidAmount = parseFloat(document.querySelector("input[name='full_paid']").value) || 0;
 
     if (paidAmount < 0) {
           paidAmount = 0;
           document.querySelector("input[name='paid_amount']").value = 0;
     }
-    // new add full paid functionality 
+    // new add full paid functionality
     if (fullPaidAmount < 0) {
           fullPaidAmount = 0;
           document.querySelector("input[name='full_paid']").value = 0;
     }
 
-    // calculate due amount 
+    // calculate due amount
     // let dueAmount = grandTotal - paidAmount;
 
-    // new add full paid functionality 
+    // new add full paid functionality
     let dueAmount = grandTotal - (paidAmount + fullPaidAmount);
 
     if (dueAmount < 0) {
@@ -253,13 +245,13 @@ function updateDueAmount() {
 document.getElementById("inputDiscount").addEventListener("input", updateGrandTotal);
 document.getElementById("inputShipping").addEventListener("input", updateGrandTotal);
 document.querySelector("input[name='paid_amount']").addEventListener("input", updateDueAmount);
-// new add full paid functionality 
+// new add full paid functionality
 document.querySelector("input[name='full_paid']").addEventListener("input", updateDueAmount);
- 
 
 
- /// Start Modal  
- 
+
+ /// Start Modal
+
   // this is modal, instead to html
   let modal = document.createElement("div");
   modal.id = "customModal";
@@ -367,7 +359,7 @@ document.querySelector("input[name='full_paid']").addEventListener("input", upda
   document.getElementById("inputDiscount").addEventListener("input", updateGrandTotal);
   document.getElementById("inputShipping").addEventListener("input", updateGrandTotal);
 
-  
+
 document.getElementById("inputDiscount").addEventListener("input", function () {
     document.getElementById("displayDiscount").textContent = this.value || 0;
 });
@@ -377,7 +369,7 @@ document.getElementById("inputShipping").addEventListener("input", function () {
 
 
 
-    
+
 
 
 
