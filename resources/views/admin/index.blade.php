@@ -6,19 +6,19 @@
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Dashboard Rekapan</h4>
+                <h4 class="m-0 fs-18 fw-semibold">Dashboard Rekapan</h4>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12 col-xl-12">
                 <div class="row g-3">
-                    
+
                     <div class="col-md-6 col-xl-3">
                         <div class="card">
                             <div class="card-body">
-                                <div class="fs-14 mb-1 text-muted">Total Penjualan</div>
-                                <div class="fs-22 mb-0 fw-bold text-black">
+                                <div class="mb-1 fs-14 text-muted">Total Penjualan</div>
+                                <div class="mb-0 text-black fs-22 fw-bold">
                                     Rp {{ number_format(\App\Models\Sale::sum('grand_total'), 0, ',', '.') }}
                                 </div>
                             </div>
@@ -28,8 +28,8 @@
                     <div class="col-md-6 col-xl-3">
                         <div class="card">
                             <div class="card-body">
-                                <div class="fs-14 mb-1 text-muted">Total Pembelian</div>
-                                <div class="fs-22 mb-0 fw-bold text-black">
+                                <div class="mb-1 fs-14 text-muted">Total Pembelian</div>
+                                <div class="mb-0 text-black fs-22 fw-bold">
                                     Rp {{ number_format(\App\Models\Purchase::sum('grand_total'), 0, ',', '.') }}
                                 </div>
                             </div>
@@ -39,8 +39,8 @@
                     <div class="col-md-6 col-xl-3">
                         <div class="card">
                             <div class="card-body">
-                                <div class="fs-14 mb-1 text-muted">Transaksi Penjualan</div>
-                                <div class="fs-22 mb-0 fw-bold text-black">
+                                <div class="mb-1 fs-14 text-muted">Transaksi Penjualan</div>
+                                <div class="mb-0 text-black fs-22 fw-bold">
                                     {{ \App\Models\Sale::count() }} Invoice
                                 </div>
                             </div>
@@ -50,8 +50,8 @@
                     <div class="col-md-6 col-xl-3">
                         <div class="card">
                             <div class="card-body">
-                                <div class="fs-14 mb-1 text-muted">Transaksi Pembelian</div>
-                                <div class="fs-22 mb-0 fw-bold text-black">
+                                <div class="mb-1 fs-14 text-muted">Transaksi Pembelian</div>
+                                <div class="mb-0 text-black fs-22 fw-bold">
                                     {{ \App\Models\Purchase::count() }} Invoice
                                 </div>
                             </div>
@@ -59,11 +59,11 @@
                     </div>
 
                 </div>
-            </div> 
-        </div> 
+            </div>
+        </div>
 
-        <div class="row mt-3">
-            
+        <div class="mt-3 row">
+
             <div class="col-md-12 col-xl-8">
                 <div class="card">
                     <div class="card-header">
@@ -71,12 +71,12 @@
                             <div class="border border-dark rounded-2 me-2 widget-icons-sections">
                                 <i data-feather="list" class="widgets-icons"></i>
                             </div>
-                            <h5 class="card-title mb-0">Tabel Rekapan Stock Opname</h5>
+                            <h5 class="mb-0 card-title">Tabel Rekapan Stock Opname</h5>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table mb-0 table-hover">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Tanggal</th>
@@ -120,18 +120,18 @@
             </div>
 
             <div class="col-md-12 col-xl-4">
-                <div class="card overflow-hidden">
+                <div class="overflow-hidden card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="border border-dark rounded-2 me-2 widget-icons-sections">
                                 <i data-feather="shopping-cart" class="widgets-icons"></i>
                             </div>
-                            <h5 class="card-title mb-0">Penjualan Terbaru</h5>
+                            <h5 class="mb-0 card-title">Penjualan Terbaru</h5>
                         </div>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="p-0 card-body">
                         <div class="table-responsive">
-                            <table class="table table-traffic mb-0">
+                            <table class="table mb-0 table-traffic">
                                 <thead>
                                     <tr>
                                         <th>Customer</th>
@@ -163,7 +163,7 @@
 
         </div>
 
-    </div> 
+    </div>
 </div>
 
 @endsection

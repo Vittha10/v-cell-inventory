@@ -4,7 +4,7 @@
 
 <div class="content">
 
-    <!-- Start Content-->
+
     <div class="container-xxl">
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -14,19 +14,19 @@
 
             <div class="text-end">
                 <ol class="breadcrumb m-0 py-0">
-                    
+
                     <li class="breadcrumb-item active">Edit Admin</li>
                 </ol>
             </div>
         </div>
 
-        <!-- Form Validation -->
+
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Edit Admin</h5>
-                    </div><!-- end card header -->
+                    </div>
 
 <div class="card-body">
     <form action="{{ route('update.admin',$admin->id) }}" method="post" class="row g-3" enctype="multipart/form-data">
@@ -34,43 +34,43 @@
 
         <div class="col-md-6">
             <label for="validationDefault01" class="form-label">Admin Name</label>
-            <input type="text" class="form-control" name="name" value="{{ $admin->name }}"  >  
+            <input type="text" class="form-control" name="name" value="{{ $admin->name }}"  >
         </div>
 
           <div class="col-md-6">
             <label for="validationDefault01" class="form-label">Admin Email</label>
-            <input type="emal" class="form-control" name="email"  value="{{ $admin->email }}"  >  
+            <input type="emal" class="form-control" name="email"  value="{{ $admin->email }}"  >
         </div>
- 
+
 
           <div class="col-md-6">
             <label for="validationDefault01" class="form-label">Role </label>
             <select name="roles" class="form-select" id="example-select">
                 <option value="" selected>Select Role</option>
-                 @foreach ($roles as $role) 
-                <option value="{{ $role->id }}" {{ $admin->hasRole($role->name) ? 'selected' : '' }} >{{ $role->name }}</option> 
+                 @foreach ($roles as $role)
+                <option value="{{ $role->id }}" {{ $admin->hasRole($role->name) ? 'selected' : '' }} >{{ $role->name }}</option>
                   @endforeach
             </select>
         </div>
- 
- 
-            
+
+
+
         <div class="col-12">
             <button class="btn btn-primary" type="submit">Save Change</button>
         </div>
     </form>
-</div> <!-- end card-body -->
-                </div> <!-- end card-->
-            </div> <!-- end col -->
+</div>
+                </div>
+            </div>
 
-          
+
         </div>
 
-        
+
 
     </div> <!-- container-fluid -->
 
 </div>
- 
+
 
 @endsection

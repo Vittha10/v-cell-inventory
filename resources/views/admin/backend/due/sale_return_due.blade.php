@@ -3,7 +3,7 @@
 
 <div class="content">
 
-    <!-- Start Content-->
+
     <div class="container-xxl">
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -13,19 +13,19 @@
 
             <div class="text-end">
                 <ol class="breadcrumb m-0 py-0">
-                    
+
                 </ol>
             </div>
         </div>
 
-        <!-- Datatables  -->
+
         <div class="row">
             <div class="col-12">
                 <div class="card">
 
                     <div class="card-header">
-                         
-                    </div><!-- end card header -->
+
+                    </div>
 
 <div class="card-body">
     <table id="datatable" class="table table-bordered dt-responsive table-responsive nowrap">
@@ -33,26 +33,26 @@
         <tr>
             <th>Sl</th>
             <th>WareHouse</th>
-            <th>Customer Name</th> 
-            <th>Due Amount</th> 
-            <th>Full Payment</th> 
+            <th>Customer Name</th>
+            <th>Due Amount</th>
+            <th>Full Payment</th>
         </tr>
         </thead>
         <tbody>
-    @foreach ($sales as $key=> $item) 
+    @foreach ($sales as $key=> $item)
     <tr>
-        <td>{{ $key+1 }}</td> 
+        <td>{{ $key+1 }}</td>
         <td>{{ $item['warehouse']['name'] }}</td>
         <td>{{ $item['customer']['name'] }}</td>
-        <td><h4> <span class="badge text-bg-secondary">${{ $item->due_amount }} </span> </h4> </td>  
+        <td><h4> <span class="badge text-bg-secondary">${{ $item->due_amount }} </span> </h4> </td>
         <td>
 
-   <a title="Pay Now" href="{{ route('edit.sale.return',$item->id) }}" class="btn btn-info btn-sm"> Pay Now  </a> 
- 
-        </td> 
+   <a title="Pay Now" href="{{ route('edit.sale.return',$item->id) }}" class="btn btn-info btn-sm"> Pay Now  </a>
+
+        </td>
     </tr>
-    @endforeach 
-                
+    @endforeach
+
         </tbody>
     </table>
 </div>
@@ -62,11 +62,11 @@
         </div>
 
 
-     
 
-    </div> <!-- container-fluid -->
 
-</div> <!-- content -->
+    </div>
+
+</div>
 
 
 

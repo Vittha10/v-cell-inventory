@@ -16,7 +16,6 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductController extends Controller
 {
-    /* ========================= MANAJEMEN KATEGORI ========================= */
 
     public function AllCategory(){
         $category = ProductCategory::latest()->get();
@@ -26,9 +25,9 @@ class ProductController extends Controller
     public function StoreCategory(Request $request){
         ProductCategory::insert([
             'category_name' => $request->category_name,
-            'category_slug' => strtolower(str_replace(' ','-',$request->category_name)), 
+            'category_slug' => strtolower(str_replace(' ','-',$request->category_name)),
         ]);
-        $notification = array('message' => 'Kategori Berhasil Ditambah','alert-type' => 'success'); 
+        $notification = array('message' => 'Kategori Berhasil Ditambah','alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
 
@@ -41,19 +40,17 @@ class ProductController extends Controller
         $cat_id = $request->cat_id;
         ProductCategory::find($cat_id)->update([
             'category_name' => $request->category_name,
-            'category_slug' => strtolower(str_replace(' ','-',$request->category_name)), 
+            'category_slug' => strtolower(str_replace(' ','-',$request->category_name)),
         ]);
-        $notification = array('message' => 'Kategori Berhasil Diupdate','alert-type' => 'success'); 
+        $notification = array('message' => 'Kategori Berhasil Diupdate','alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
 
     public function DeleteCategory($id){
         ProductCategory::find($id)->delete();
-        $notification = array('message' => 'Kategori Berhasil Dihapus','alert-type' => 'success'); 
+        $notification = array('message' => 'Kategori Berhasil Dihapus','alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
-
-    /* ========================= MANAJEMEN PRODUK ========================= */
 
     public function AllProduct(){
         $allData = Product::orderBy('id','desc')->get();
@@ -65,12 +62,12 @@ class ProductController extends Controller
         $brands = Brand::all();
         $suppliers = Supplier::all();
         $warehouses = WareHouse::all();
-        return view('admin.backend.product.add_product',compact('categories','brands','suppliers','warehouses')); 
+        return view('admin.backend.product.add_product',compact('categories','brands','suppliers','warehouses'));
     }
 
     public function StoreProduct(Request $request){
         $request->validate([
-        'code' => 'required|unique:products,code', 
+        'code' => 'required|unique:products,code',
         'name' => 'required',
     ], [
         'code.unique' => 'Kode SKU ini sudah digunakan oleh produk lain!',
@@ -88,7 +85,7 @@ class ProductController extends Controller
             'note' => $request->note,
             'product_qty' => $request->product_qty,
             'status' => $request->status,
-            'created_at' => now(), 
+            'created_at' => now(),
         ]);
 
         if ($request->hasFile('image')) {
@@ -103,7 +100,7 @@ class ProductController extends Controller
                ]);
            }
         }
-        $notification = array('message' => 'Produk Berhasil Disimpan','alert-type' => 'success'); 
+        $notification = array('message' => 'Produk Berhasil Disimpan','alert-type' => 'success');
         return redirect()->route('all.product')->with($notification);
     }
 
@@ -114,7 +111,7 @@ class ProductController extends Controller
         $suppliers = Supplier::all();
         $warehouses = WareHouse::all();
         $multiimg = ProductImage::where('product_id',$id)->get();
-        return view('admin.backend.product.edit_product',compact('categories','brands','suppliers','warehouses','editData','multiimg')); 
+        return view('admin.backend.product.edit_product',compact('categories','brands','suppliers','warehouses','editData','multiimg'));
     }
 
     public function UpdateProduct(Request $request){
@@ -139,15 +136,15 @@ class ProductController extends Controller
                 $manager = new ImageManager(new Driver());
                 $name_gen = hexdec(uniqid()).'.'.$img->getClientOriginalExtension();
                 $imgs = $manager->read($img);
-                $imgs->resize(150,150)->save(public_path('upload/productimg/'.$name_gen)); 
+                $imgs->resize(150,150)->save(public_path('upload/productimg/'.$name_gen));
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image' => 'upload/productimg/'.$name_gen
-                ]); 
+                ]);
             }
         }
-        $notification = array('message' => 'Produk Berhasil Diupdate','alert-type' => 'success'); 
-        return redirect()->route('all.product')->with($notification); 
+        $notification = array('message' => 'Produk Berhasil Diupdate','alert-type' => 'success');
+        return redirect()->route('all.product')->with($notification);
     }
 
     public function DeleteProduct($id){
@@ -160,7 +157,7 @@ class ProductController extends Controller
         }
         ProductImage::where('product_id',$id)->delete();
         $product->delete();
-        $notification = array('message' => 'Produk Berhasil Dihapus','alert-type' => 'success'); 
+        $notification = array('message' => 'Produk Berhasil Dihapus','alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
 
@@ -184,8 +181,8 @@ class ProductController extends Controller
 
     public function StoreStockOpname(Request $request){
         $product = Product::findOrFail($request->product_id);
-        
-        $stok_sistem = $product->product_qty; 
+
+        $stok_sistem = $product->product_qty;
         $qty_tambah = $request->qty_tambah ?? 0;
         $qty_kurang = $request->qty_kurang ?? 0;
         $stok_fisik_akhir = $stok_sistem + $qty_tambah - $qty_kurang;
@@ -215,24 +212,17 @@ class ProductController extends Controller
 
     }
 
-    /* ========================= DETAIL PRODUK ========================= */
-
     public function DetailsProduct($id){
-        // Mengambil data produk berdasarkan ID
         $product = Product::findOrFail($id);
-        
-        // Mengambil galeri foto produk tersebut
+
         $multiimg = ProductImage::where('product_id', $id)->get();
-        
-        // Mengambil data pendukung lainnya (opsional, sesuaikan dengan kebutuhan view Anda)
         $categories = ProductCategory::all();
         $brands = Brand::all();
-        
+
         return view('admin.backend.product.details_product', compact('product', 'multiimg', 'categories', 'brands'));
     }
-    
+
     public function DeleteStockOpname($id){
-    // Menghapus data dari tabel stock_opnames berdasarkan ID
     DB::table('stock_opnames')->where('id', $id)->delete();
 
     $notification = array(
@@ -243,18 +233,18 @@ class ProductController extends Controller
     return redirect()->back()->with($notification);
 }
 
-// 1. Fungsi Tampilan Edit
+
 public function EditStockOpname($id){
     $products = Product::latest()->get();
     $stock_opname = DB::table('stock_opnames')->where('id', $id)->first();
     return view('admin.backend.product.stock_opname_edit', compact('products', 'stock_opname'));
 }
 
-// 2. Fungsi Proses Update
+
 public function UpdateStockOpname(Request $request){
     $so_id = $request->id;
     $product = Product::findOrFail($request->product_id);
-    
+
     $qty_tambah = $request->qty_tambah ?? 0;
     $qty_kurang = $request->qty_kurang ?? 0;
     $stok_fisik_akhir = $request->stok_sistem + $qty_tambah - $qty_kurang;
@@ -266,7 +256,7 @@ public function UpdateStockOpname(Request $request){
         'qty_kurang' => $qty_kurang,
         'stok_fisik' => $stok_fisik_akhir,
         'selisih'    => $stok_fisik_akhir - $request->stok_sistem,
-        'alasan'     => $request->alasan ?? '-', // Mencegah error 'alasan' cannot be null
+        'alasan'     => $request->alasan ?? '-',
         'status'     => $request->status,
         'updated_at' => now(),
     ]);

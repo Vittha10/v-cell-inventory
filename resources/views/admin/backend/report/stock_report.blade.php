@@ -3,9 +3,9 @@
 
 <div class="page-content m-2">
     <div class="container">
-       @include('admin.backend.report.body.report_top')  
+       @include('admin.backend.report.body.report_top')
     </div>
-     {{-- /// end Container  --}}
+
 
      <div class="card">
 
@@ -13,14 +13,14 @@
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarNav">
 
-    @include('admin.backend.report.body.report_menu')  
-     
+    @include('admin.backend.report.body.report_menu')
+
 </div>
 @include('admin.backend.report.body.report_filter')
- 
 
-            </div> 
-        </nav> 
+
+            </div>
+        </nav>
 
     <div class="card-body">
         <div class="table-responsive">
@@ -34,18 +34,18 @@
                         <th>Product Name</th>
                         <th>Category</th>
                         <th>Warehouse </th>
-                        <th>Stock Quantity</th> 
+                        <th>Stock Quantity</th>
                     </tr>
                 </thead>
             <tbody>
-            @foreach ($products as $key=> $item)  
+            @foreach ($products as $key=> $item)
                 <tr>
                     <td>{{ $key+1 }}</td>
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->category->category_name ?? 'N/A' }}</td>
-                    <td>{{ $item->warehouse->name ?? 'N/A' }}</td> 
-                    <td><h4> <span class="badge text-bg-secondary"> {{ $item->product_qty ?? 'N/A'}} </span> </h4>  </td> 
-                </tr> 
+                    <td>{{ $item->warehouse->name ?? 'N/A' }}</td>
+                    <td><h4> <span class="badge text-bg-secondary"> {{ $item->product_qty ?? 'N/A'}} </span> </h4>  </td>
+                </tr>
                 @endforeach
             </tbody>
 
@@ -65,10 +65,10 @@
 
 
      </div>
-     {{-- /// End Card --}} 
 
-</div> 
 
- 
- 
+</div>
+
+
+
 @endsection

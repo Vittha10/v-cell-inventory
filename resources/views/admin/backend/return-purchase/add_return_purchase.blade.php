@@ -95,7 +95,7 @@
                                                     <div class="table-responsive">
                                                         <table class="table border">
                                                             <tbody>
-                                                                {{-- Bagian finansial disembunyikan agar sama dengan Purchase --}}
+
                                                                 <tr class="d-none">
                                                                     <td class="py-3">Grand Total</td>
                                                                     <td class="py-3" id="grandTotal">Rp 0</td>

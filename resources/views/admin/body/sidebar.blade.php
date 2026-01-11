@@ -1,4 +1,3 @@
-
 <div class="app-sidebar-menu">
     <div class="h-100" data-simplebar>
 
@@ -38,7 +37,7 @@
 
     <li class="menu-title">Pages</li>
 
-    @if (Auth::guard('web')->user()->can('brand.menu')) 
+    @if (Auth::guard('web')->user()->can('brand.menu'))
     <li>
         <a href="#sidebarAuth" data-bs-toggle="collapse">
             <i data-feather="users"></i>
@@ -47,18 +46,18 @@
         </a>
         <div class="collapse" id="sidebarAuth">
             <ul class="nav-second-level">
-       @if (Auth::guard('web')->user()->can('all.brand'))   
+       @if (Auth::guard('web')->user()->can('all.brand'))
       <li>
         <a href="{{ route('all.brand') }}" class="tp-link">All Brand</a>
        </li>
-       @endif   
-                    
+       @endif
+
             </ul>
         </div>
     </li>
      @endif
 
- @if (Auth::guard('web')->user()->can('warehouse.menu')) 
+ @if (Auth::guard('web')->user()->can('warehouse.menu'))
     <li>
         <a href="#WareHouse" data-bs-toggle="collapse">
             <i data-feather="users"></i>
@@ -67,18 +66,18 @@
         </a>
         <div class="collapse" id="WareHouse">
             <ul class="nav-second-level">
-       @if (Auth::guard('web')->user()->can('all.warehouse'))  
+       @if (Auth::guard('web')->user()->can('all.warehouse'))
        <li>
         <a href="{{ route('all.warehouse') }}" class="tp-link">All WareHouse</a>
-       </li>  
-       @endif 
-                    
+       </li>
+       @endif
+
             </ul>
         </div>
     </li>
       @endif
 
- @if (Auth::guard('web')->user()->can('supplier.menu')) 
+ @if (Auth::guard('web')->user()->can('supplier.menu'))
     <li>
         <a href="#Supplier" data-bs-toggle="collapse">
             <i data-feather="users"></i>
@@ -89,14 +88,14 @@
             <ul class="nav-second-level">
         <li>
         <a href="{{ route('all.supplier') }}" class="tp-link">All Supplier</a>
-       </li>   
-                    
+       </li>
+
             </ul>
         </div>
     </li>
     @endif
 
-     @if (Auth::guard('web')->user()->can('customer.menu')) 
+     @if (Auth::guard('web')->user()->can('customer.menu'))
     <li>
         <a href="#Customer" data-bs-toggle="collapse">
             <i data-feather="users"></i>
@@ -107,8 +106,8 @@
             <ul class="nav-second-level">
         <li>
         <a href="{{ route('all.customer') }}" class="tp-link">All Customer</a>
-       </li>   
-                    
+       </li>
+
             </ul>
         </div>
     </li>
@@ -124,15 +123,15 @@
             <ul class="nav-second-level">
         <li>
         <a href="{{ route('all.category') }}" class="tp-link">All Category</a>
-       </li>  
-       
+       </li>
+
        <li>
         <a href="{{ route('all.product') }}" class="tp-link">All Product</a>
-       </li>  
+       </li>
        <li>
         <a href="{{ route('stock.opname') }}" class="tp-link">Stock Opname</a>
        </li>
-                    
+
             </ul>
         </div>
     </li>
@@ -148,11 +147,11 @@
             <ul class="nav-second-level">
         <li>
         <a href="{{ route('all.purchase') }}" class="tp-link">All Purchase</a>
-       </li>   
+       </li>
        <li>
         <a href="{{ route('all.return.purchase') }}" class="tp-link">Purchase Return</a>
-       </li>  
-                    
+       </li>
+
             </ul>
         </div>
     </li>
@@ -168,16 +167,16 @@
             <ul class="nav-second-level">
         <li>
         <a href="{{ route('all.sale') }}" class="tp-link">All Sale</a>
-       </li>   
+       </li>
        <li>
         <a href="{{ route('all.sale.return') }}" class="tp-link">Sale Return</a>
-       </li>  
-                    
+       </li>
+
             </ul>
         </div>
     </li>
 
-    {{--  
+    {{--
     <li>
         <a href="#Due" data-bs-toggle="collapse">
             <i data-feather="alert-octagon"></i>
@@ -192,11 +191,11 @@
                 <li>
                     <a href="{{ route('due.sale.return') }}" class="tp-link">Sales Return Due</a>
                 </li>
-                
+
             </ul>
         </div>
     </li>
-    
+
 
 
     <li>
@@ -210,8 +209,8 @@
                 <li>
                     <a href="{{ route('all.transfer') }}" class="tp-link">Transfers </a>
                 </li>
-                 
-                
+
+
             </ul>
         </div>
     </li>
@@ -229,17 +228,17 @@
                 <li>
                     <a href="{{ route('all.report') }}" class="tp-link">All Reports </a>
                 </li>
-                 
-                
+
+
             </ul>
         </div>
     </li>
 
-    
-    
+
+
 
     {{--
-    <li class="menu-title mt-2">General</li>
+    <li class="mt-2 menu-title">General</li>
 
     <li>
         <a href="#sidebarBaseui" data-bs-toggle="collapse">
@@ -262,7 +261,7 @@
     <li>
         <a href="{{ route('all.roles.permission') }}" class="tp-link">All Role Permission</a>
     </li>
-    
+
 </ul>
         </div>
     </li>
@@ -279,14 +278,14 @@
 <ul class="nav-second-level">
     <li>
         <a href="{{ route('all.admin') }}" class="tp-link">All Admin</a>
-    </li> 
-    
+    </li>
+
 </ul>
         </div>
     </li>
 
 
-    {{--  
+    {{--
     <li>
         <a href="#sidebarAdvancedUI" data-bs-toggle="collapse">
             <i data-feather="cpu"></i>
@@ -301,7 +300,7 @@
                 <li>
                     <a href="extended-notifications.html" class="tp-link">Notifications</a>
                 </li>
-                    
+
             </ul>
         </div>
     </li>

@@ -1,28 +1,28 @@
 @extends('admin.admin_master')
 @section('admin')
 
-<div class="page-content m-2">
+<div class="m-2 page-content">
     <div class="container">
         @include('admin.backend.report.body.report_top')
 
     </div>
 
      {{-- /// end Container  --}}
-     
+
 
      <div class="card">
 
         <nav class="navbar navbar-expand-lg bg-dark">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarNav">
-    
+
  @include('admin.backend.report.body.report_menu')
- 
+
 
 </div>
 
     @include('admin.backend.report.body.report_filter')
-{{-- /// Date rang filter --}} 
+{{-- /// Date rang filter --}}
 {{--
 <div class="row">
     <div class="col-md-12 d-flex align-items-center position-relative">
@@ -33,33 +33,33 @@
             <option value="last_week">Last Week</option>
             <option value="this_month">This Month</option>
             <option value="last_month">Last Month</option>
-            <option value="custom">Custom Range</option> 
+            <option value="custom">Custom Range</option>
         </select>
 
         <button id="btn-download" class="btn btn-success">
             <i class="fas fa-file-excel"></i> Download
         </button>
-        
-        
-    </div> 
+
+
+    </div>
     --}}
 
     {{-- // Custom date field  --}}
-    <div class="dropdown-menu p-3 custom-dropdown position-absolute shadow bg-white">
+    <div class="p-3 bg-white shadow dropdown-menu custom-dropdown position-absolute">
         <label for="custom-start-date">Start Date:</label>
-        <input type="date" id="custom-start-date" class="form-control mb-2">
+        <input type="date" id="custom-start-date" class="mb-2 form-control">
 
         <label for="custom-end-date">End Date:</label>
-        <input type="date" id="custom-end-date" class="form-control mb-2">
+        <input type="date" id="custom-end-date" class="mb-2 form-control">
 
-        <button id="apply-filter" class="btn btn-primary w-100">Apply</button> 
-    </div> 
+        <button id="apply-filter" class="btn btn-primary w-100">Apply</button>
+    </div>
 </div>
-{{-- /// End Date rang filter  --}} 
+{{-- /// End Date rang filter  --}}
 
 
-            </div> 
-        </nav> 
+            </div>
+        </nav>
 
     <div class="card-body">
         <div class="table-responsive">
@@ -77,12 +77,12 @@
                         <th>Quantity</th>
                         <th>Unti Price</th>
                         <th>Status</th>
-                        <th>Grand Total</th> 
+                        <th>Grand Total</th>
                     </tr>
                 </thead>
             <tbody>
-            @foreach ($purchases as $key=> $purchase) 
-            @foreach ($purchase->purchaseItems as $item) 
+            @foreach ($purchases as $key=> $purchase)
+            @foreach ($purchase->purchaseItems as $item)
                 <tr>
                     <td>{{ $key+1 }}</td>
                     <td>{{ $purchase->date }}</td>
@@ -92,7 +92,7 @@
                     <td>{{ $item->quantity ?? 'N/A'}}</td>
                     <td>{{ $item->net_unit_cost ?? 'N/A'}}</td>
                     <td>{{ $purchase->status ?? 'N/A' }}</td>
-                    <td>{{ $purchase->grand_total ?? 'N/A' }}</td> 
+                    <td>{{ $purchase->grand_total ?? 'N/A' }}</td>
                 </tr>
                 @endforeach
                 @endforeach
@@ -114,9 +114,9 @@
 
 
      </div>
-     {{-- /// End Card --}} 
+     {{-- /// End Card --}}
 
-</div> 
+</div>
 
 <style>
     /* Ensure the navbar container is a positioning context */
@@ -230,25 +230,25 @@ document.addEventListener('DOMContentLoaded', function() {
             let selectedValue = this.value;
             let today = new Date();
             let startDate, endDate;
-        
+
             if (selectedValue === "custom") {
                 customDropdown.style.display = "block";
                 return;
             } else {
                 customDropdown.style.display = "none";
             }
-        
+
             // Hitung Tanggal
             switch (selectedValue) {
                 case "today": startDate = endDate = formatDate(today); break;
                 case "this_week": startDate = formatDate(getWeekStart(today)); endDate = formatDate(today); break;
                 case "this_month": startDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 1)); endDate = formatDate(today); break;
-                case "last_month": 
+                case "last_month":
                     startDate = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1));
                     endDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0));
                     break;
             }
-        
+
             if(startDate && endDate) fetchFilteredData(startDate, endDate);
         });
     }
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTable(items) {
         let tbody = document.querySelector("#example tbody");
         if(!tbody) return;
-        tbody.innerHTML = ""; 
+        tbody.innerHTML = "";
         // Logika pengisian tabel disesuaikan dengan kebutuhan UI kamu
     }
 });

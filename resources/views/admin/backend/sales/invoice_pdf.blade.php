@@ -26,7 +26,7 @@
             page-break-inside: avoid;
         }
         .invoice-header {
-            background-color: #0d6efd; /* Fallback for gradient */
+            background-color: #0d6efd;
             background: linear-gradient(135deg, #0d6efd, #17a2b8);
             color: #fff;
             padding: 15px;

@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
-use App\Models\Product; 
-use App\Models\Customer; 
+use App\Models\Product;
+use App\Models\Customer;
 use App\Models\WareHouse;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
-use App\Models\Sale; 
-use App\Models\SaleItem; 
+use App\Models\Sale;
+use App\Models\SaleItem;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -19,23 +19,21 @@ class SaleController extends Controller
 {
     public function AllSales(){
         $allData = Sale::orderBy('id','desc')->get();
-        return view('admin.backend.sales.all_sales',compact('allData')); 
+        return view('admin.backend.sales.all_sales',compact('allData'));
     }
-    // End Method 
 
     public function AddSales(){
         $customers = Customer::all();
         $warehouses = WareHouse::all();
         return view('admin.backend.sales.add_sales',compact('customers','warehouses'));
     }
-     // End Method 
 
 
      public function StoreSales(Request $request){
 
         $request->validate([
             'date' => 'required|date',
-            'status' => 'required', 
+            'status' => 'required',
         ]);
 
     try {
@@ -54,11 +52,10 @@ class SaleController extends Controller
             'note' => $request->note,
             'grand_total' => 0,
             'paid_amount' => $request->paid_amount,
-            'due_amount' => $request->due_amount, 
+            'due_amount' => $request->due_amount,
 
         ]);
 
-        /// Store Sales Items & Update Stock 
     foreach($request->products as $productData){
         $product = Product::findOrFail($productData['id']);
         $netUnitCost = $productData['net_unit_cost'] ?? $product->price;
@@ -77,10 +74,10 @@ class SaleController extends Controller
             'stock' => $product->product_qty + $productData['quantity'],
             'quantity' => $productData['quantity'],
             'discount' => $productData['discount'] ?? 0,
-            'subtotal' => $subtotal, 
+            'subtotal' => $subtotal,
         ]);
 
-        $product->decrement('product_qty', $productData['quantity']); 
+        $product->decrement('product_qty', $productData['quantity']);
     }
 
     $sales->update(['grand_total' => $grandTotal + $request->shipping - $request->discount]);
@@ -90,15 +87,14 @@ class SaleController extends Controller
     $notification = array(
         'message' => 'Sales Stored Successfully',
         'alert-type' => 'success'
-     ); 
-     return redirect()->route('all.sale')->with($notification);  
+     );
+     return redirect()->route('all.sale')->with($notification);
 
     } catch (\Exception $e) {
         DB::rollBack();
         return response()->json(['error' => $e->getMessage()], 500);
-      } 
+      }
     }
-    // End Method 
 
     public function EditSales($id){
         $editData = Sale::with('saleItems.product')->findOrFail($id);
@@ -106,13 +102,12 @@ class SaleController extends Controller
         $warehouses = WareHouse::all();
         return view('admin.backend.sales.edit_sales',compact('editData','customers','warehouses'));
     }
-    // End Method 
 
     public function UpdateSales(Request $request, $id){
 
         $request->validate([
             'date' => 'required|date',
-            'status' => 'required', 
+            'status' => 'required',
         ]);
 
         $sales = Sale::findOrFail($id);
@@ -127,10 +122,8 @@ class SaleController extends Controller
             'grand_total' => $request->grand_total,
             'paid_amount' => $request->paid_amount,
             'due_amount' => $request->due_amount,
-            'full_paid' => $request->full_paid,   
+            'full_paid' => $request->full_paid,
         ]);
-
-    // Delete old sales item
     SaleItem::where('sale_id',$sales->id)->delete();
 
     foreach($request->products as $product_id => $product){
@@ -141,25 +134,21 @@ class SaleController extends Controller
             'stock' => $product['stock'],
             'quantity' => $product['quantity'],
             'discount' => $product['discount'] ?? 0,
-            'subtotal' => $product['subtotal'],  
+            'subtotal' => $product['subtotal'],
         ]);
-
-        /// Update Product Stock
-
         $productModel = Product::find($product_id);
         if ($productModel) {
             $productModel->product_qty += $product['quantity'];
             $productModel->save();
-        }  
+        }
     }
 
     $notification = array(
         'message' => 'Sale Updated Successfully',
         'alert-type' => 'success'
-     ); 
-     return redirect()->route('all.sale')->with($notification);  
+     );
+     return redirect()->route('all.sale')->with($notification);
     }
-    // End Method 
 
     public function DeleteSales($id){
         try {
@@ -180,22 +169,19 @@ class SaleController extends Controller
           $notification = array(
             'message' => 'Sale Deleted Successfully',
             'alert-type' => 'success'
-         ); 
-         return redirect()->route('all.sale')->with($notification);  
-            
+         );
+         return redirect()->route('all.sale')->with($notification);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
-          }  
+          }
     }
-    // End Method 
-
     public function DetailsSales($id){
         $sales = Sale::with(['customer','saleItems.product'])->find($id);
         return view('admin.backend.sales.sales_details',compact('sales'));
 
     }
-     // End Method 
 
      public function InvoiceSales($id){
         $sales = Sale::with(['customer','warehouse','saleItems.product'])->find($id);
@@ -204,7 +190,28 @@ class SaleController extends Controller
         return $pdf->download('sales_'.$id.'.pdf');
 
     }
-     // End Method 
 
+    public function PurchaseProductSearch(Request $request)
+    {
+        $query = $request->get('search');
 
+        $products = Product::where('product_name', 'LIKE', "%{$query}%")
+                            ->orWhere('product_code', 'LIKE', "%{$query}%")
+                            ->limit(5)
+                            ->get();
+
+        $output = '<div class="shadow-sm list-group">';
+        if (count($products) > 0) {
+            foreach ($products as $row) {
+                $output .= '<a href="javascript:void(0)" class="list-group-item list-group-item-action"
+                               onclick="selectProduct('.$row->id.', \''.addslashes($row->product_name).'\', '.$row->selling_price.', '.$row->product_qty.')">
+                                <b>'.$row->product_name.'</b> ('.$row->product_code.') - <span class="text-success">Rp '.number_format($row->selling_price).'</span>
+                            </a>';
+            }
+        } else {
+            $output .= '<div class="list-group-item text-danger">Produk tidak ditemukan</div>';
+        }
+        $output .= '</div>';
+        return $output;
+    }
 }

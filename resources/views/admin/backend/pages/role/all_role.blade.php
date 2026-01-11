@@ -3,7 +3,7 @@
 
 <div class="content">
 
-    <!-- Start Content-->
+
     <div class="container-xxl">
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -18,36 +18,36 @@
             </div>
         </div>
 
-        <!-- Datatables  -->
+
         <div class="row">
             <div class="col-12">
                 <div class="card">
 
                     <div class="card-header">
-                         
-                    </div><!-- end card header -->
+
+                    </div>
 
 <div class="card-body">
     <table id="datatable" class="table table-bordered dt-responsive table-responsive nowrap">
         <thead>
         <tr>
             <th>Sl</th>
-            <th>Roles Name</th> 
+            <th>Roles Name</th>
             <th>Action</th>
         </tr>
         </thead>
         <tbody>
-           @foreach ($roles as $key=> $item) 
+           @foreach ($roles as $key=> $item)
             <tr>
                 <td>{{ $key+1 }}</td>
-                <td>{{ $item->name }}</td> 
+                <td>{{ $item->name }}</td>
                 <td>
-            <a href="{{ route('edit.roles',$item->id) }}" class="btn btn-success btn-sm">Edit</a>  
-            <a href="{{ route('delete.roles',$item->id) }}" class="btn btn-danger btn-sm" id="delete">Delete</a>    
-                </td> 
+            <a href="{{ route('edit.roles',$item->id) }}" class="btn btn-success btn-sm">Edit</a>
+            <a href="{{ route('delete.roles',$item->id) }}" class="btn btn-danger btn-sm" id="delete">Delete</a>
+                </td>
             </tr>
-            @endforeach 
-                
+            @endforeach
+
         </tbody>
     </table>
 </div>
@@ -57,11 +57,11 @@
         </div>
 
 
-     
 
-    </div> <!-- container-fluid -->
 
-</div> <!-- content -->
+    </div>
+
+</div>
 
 
 

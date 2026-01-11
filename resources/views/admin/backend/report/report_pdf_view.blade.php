@@ -33,6 +33,8 @@
                     <th width="15%">Warehouse</th>
                     <th width="15%">Category</th>
                     <th width="10%">Qty</th>
+                    <th width="15%">Unit Price</th>
+                    <th width="15%">Grand Total</th>
                 </tr>
             @else
                 <tr>
@@ -40,10 +42,13 @@
                     <th width="18%">Supplier/Customer</th>
                     <th width="20%">Product</th>
                     <th width="10%">Qty</th>
+                    <th width="20%">Unit Price</th>
+                    <th width="20%">Grand Total</th>
                 </tr>
             @endif
         </thead>
         <tbody>
+            @php $totalSeluruhnya = 0; @endphp
 
             @foreach($reports as $report)
                 @if($category == 'stock')
@@ -62,7 +67,6 @@
                         <td>{{ $report->name }}</td>
                         <td class="text-center">{{ $report->warehouse->name ?? '-' }}</td>
 
-                        {{-- FIX KATEGORI: Cek nama kolom category_name atau name --}}
                         <td class="text-center">
                             {{ $report->category->category_name ?? $report->category->name ?? '-' }}
                         </td>

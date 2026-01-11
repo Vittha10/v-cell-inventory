@@ -10,29 +10,29 @@
 
 <div class="content">
 
-    <!-- Start Content-->
+
     <div class="container-xxl">
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Edit Role In Permission</h4>
+                <h4 class="m-0 fs-18 fw-semibold">Edit Role In Permission</h4>
             </div>
 
             <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-                    
+                <ol class="py-0 m-0 breadcrumb">
+
                     <li class="breadcrumb-item active">Edit Role In Permission</li>
                 </ol>
             </div>
         </div>
 
-        <!-- Form Validation -->
+
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Edit Role In Permission</h5>
-                    </div><!-- end card header -->
+                        <h5 class="mb-0 card-title">Edit Role In Permission</h5>
+                    </div>
 
 <div class="card-body">
     <form action="{{ route('admin.roles.update',$role->id) }}" method="post" class="row g-3" enctype="multipart/form-data">
@@ -41,12 +41,12 @@
         <div class="col-md-6">
             <label for="validationDefault01" class="form-label">Role Name </label>
             <h4>{{ $role->name }}</h4>
-        </div> 
+        </div>
 
-    <div class="form-check mb-2">
+    <div class="mb-2 form-check">
     <input class="form-check-input" type="checkbox" id="formCheck1">
     <label class="form-check-label" for="formCheck1">
-     Permission All 
+     Permission All
     </label>
     </div>
 
@@ -59,53 +59,53 @@
         $permissions = App\Models\User::getpermissionByGroupName($group->group_name)
     @endphp
 
-     <div class="form-check mb-2">
+     <div class="mb-2 form-check">
     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" {{ App\Models\User::roleHasPermissions($role,$permissions) ? 'checked' : '' }} >
     <label class="form-check-label" for="flexCheckDefault">
      {{ $group->group_name }}
     </label>
-    </div> 
+    </div>
         </div>
 
 
   <div class="col-9">
-    
 
-    @foreach ($permissions as $permission) 
-     <div class="form-check mb-2">
+
+    @foreach ($permissions as $permission)
+     <div class="mb-2 form-check">
     <input class="form-check-input" name="permission[]" value="{{ $permission->id }}" type="checkbox" id="flexCheckDefault{{ $permission->id }}" {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}>
     <label class="form-check-label" for="flexCheckDefault{{ $permission->id }}">
      {{ $permission->name }}
     </label>
-    </div> 
+    </div>
      @endforeach
-     <br> 
+     <br>
 
-      </div>  
-    </div> 
-    {{-- // End Row --}}
-        
+      </div>
+    </div>
+
+
     @endforeach
-         
-        
-            
+
+
+
         <div class="col-12">
             <button class="btn btn-primary" type="submit">Save Change</button>
         </div>
     </form>
-</div> <!-- end card-body -->
-                </div> <!-- end card-->
-            </div> <!-- end col -->
+</div>
+                </div>
+            </div>
 
-          
+
         </div>
 
-        
 
-    </div> <!-- container-fluid -->
+
+    </div>
 
 </div>
- 
+
 <script>
     $('#formCheck1').click(function(){
         if($(this).is(':checked')){

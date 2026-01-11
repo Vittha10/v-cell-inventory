@@ -21,14 +21,12 @@ class PurchaseController extends Controller
         $allData = Purchase::orderBy('id','desc')->get();
         return view('admin.backend.purchase.all_purchase',compact('allData'));
     }
-    // End Method
 
     public function AddPurchase(){
         $suppliers = Supplier::all();
         $warehouses = WareHouse::all();
         return view('admin.backend.purchase.add_purchase',compact('suppliers','warehouses'));
     }
-     // End Method
 
     public function PurchaseProductSearch(Request $request){
         $query = $request->input('query');
@@ -48,7 +46,7 @@ class PurchaseController extends Controller
         return response()->json($products);
 
     }
-     // End Method
+
 
     public function StorePurchase(Request $request){
 
@@ -74,8 +72,6 @@ class PurchaseController extends Controller
             'note' => $request->note,
             'grand_total' => 0,
         ]);
-
-        /// Store Purchase Items & Update Stock
     foreach($request->products as $productData){
         $product = Product::findOrFail($productData['id']);
         $netUnitCost = $productData['net_unit_cost'] ?? $product->price;
@@ -117,16 +113,12 @@ class PurchaseController extends Controller
         return response()->json(['error' => $e->getMessage()], 500);
       }
     }
-    // End Method
-
-
     public function EditPurchase($id){
         $editData = Purchase::with('purchaseItems.product')->findOrFail($id);
         $suppliers = Supplier::all();
         $warehouses = WareHouse::all();
         return view('admin.backend.purchase.edit_purchase',compact('editData','suppliers','warehouses'));
     }
-    // End Method
 
    public function UpdatePurchase(Request $request, $id) {
     $request->validate([
@@ -138,8 +130,6 @@ class PurchaseController extends Controller
     try {
         $purchase = Purchase::findOrFail($id);
         $oldStatus = $purchase->status;
-
-        // 1. Kembalikan stok lama HANYA jika status sebelumnya adalah 'Received'
         $oldItems = PurchaseItem::where('purchase_id', $purchase->id)->get();
         if ($oldStatus === 'Received') {
             foreach ($oldItems as $oldItem) {
@@ -147,15 +137,11 @@ class PurchaseController extends Controller
             }
         }
 
-        // 2. Hapus detail item lama
         PurchaseItem::where('purchase_id', $purchase->id)->delete();
-
-        // 3. Simpan item baru & Hitung Grand Total otomatis
         $calculatedGrandTotal = 0;
 
         foreach ($request->products as $productData) {
             $product = Product::findOrFail($productData['product_id']);
-            // Ambil harga dari database karena di form sudah dihapus
             $unitCost = $product->price;
             $subtotal = $unitCost * $productData['quantity'];
             $calculatedGrandTotal += $subtotal;
@@ -167,16 +153,12 @@ class PurchaseController extends Controller
                 'quantity' => $productData['quantity'],
                 'subtotal' => $subtotal,
                 'discount' => 0,
-                'stock' => $product->product_qty, // Stock saat ini
+                'stock' => $product->product_qty,
             ]);
-
-            // 4. Update stok produk HANYA jika status baru adalah 'Received'
             if ($request->status === 'Received') {
                 $product->increment('product_qty', $productData['quantity']);
             }
         }
-
-        // 5. Update data Purchase utama dengan total yang sudah dihitung
         $shipping = $request->shipping ?? 0;
         $discount = $request->discount ?? 0;
         $finalTotal = ($calculatedGrandTotal + $shipping) - $discount;
@@ -189,7 +171,7 @@ class PurchaseController extends Controller
             'note' => $request->note,
             'shipping' => $shipping,
             'discount' => $discount,
-            'grand_total' => $finalTotal, // Nilai ini sekarang dijamin tidak NULL
+            'grand_total' => $finalTotal,
         ]);
 
         DB::commit();
@@ -203,14 +185,12 @@ class PurchaseController extends Controller
         return back()->with(['message' => 'Error: ' . $e->getMessage(), 'alert-type' => 'error']);
     }
 }
-    // End Method
 
     public function DetailsPurchase($id){
         $purchase = Purchase::with(['supplier','purchaseItems.product'])->find($id);
         return view('admin.backend.purchase.purchase_details',compact('purchase'));
 
     }
-     // End Method
 
     public function InvoicePurchase($id){
         $purchase = Purchase::with(['supplier','warehouse','purchaseItems.product'])->find($id);
@@ -219,8 +199,6 @@ class PurchaseController extends Controller
         return $pdf->download('purchase_'.$id.'.pdf');
 
     }
-     // End Method
-
     public function DeletePurchase($id){
         try {
           DB::beginTransaction();
@@ -248,8 +226,5 @@ class PurchaseController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
           }
     }
-
-    // End Method
-
 
 }

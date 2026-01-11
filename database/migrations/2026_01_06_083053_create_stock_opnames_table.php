@@ -6,15 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
    public function up()
 {
     Schema::create('stock_opnames', function (Blueprint $table) {
         $table->id();
         $table->integer('product_id');
-        $table->date('tanggal_so'); // Kolom ini sangat penting
+        $table->date('tanggal_so');
         $table->integer('stok_sistem');
         $table->integer('qty_tambah')->default(0);
         $table->integer('qty_kurang')->default(0);
@@ -26,9 +24,7 @@ return new class extends Migration
     });
 }
 
-    /**
-     * Reverse the migrations.
-     */
+
     public function down(): void
     {
         Schema::dropIfExists('stock_opnames');

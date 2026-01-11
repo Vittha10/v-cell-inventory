@@ -4,22 +4,22 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product; 
-use App\Models\Customer;  
-use App\Models\WareHouse; 
-use App\Models\Sale; 
-use App\Models\SaleReturn; 
-use Illuminate\Support\Facades\DB; 
-use App\Models\Purchase; 
-use App\Models\ReturnPurchase; 
+use App\Models\Product;
+use App\Models\Customer;
+use App\Models\WareHouse;
+use App\Models\Sale;
+use App\Models\SaleReturn;
+use Illuminate\Support\Facades\DB;
+use App\Models\Purchase;
+use App\Models\ReturnPurchase;
 use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\Pdf; // IMPORT INI UNTUK PDF
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
     public function AllReport(){
         $purchases = Purchase::with(['purchaseItems.product','supplier','warehouse'])->get();
-        return view('admin.backend.report.all_report',compact('purchases')); 
+        return view('admin.backend.report.all_report',compact('purchases'));
     }
 
     public function DownloadPdf(Request $request)
@@ -28,8 +28,6 @@ class ReportController extends Controller
         $range = $request->range;
         $start_date = $request->start;
         $end_date = $request->end;
-
-        // 1. Tentukan Range Tanggal
         $start = null;
         $end = null;
 
@@ -46,8 +44,6 @@ class ReportController extends Controller
             $start = Carbon::parse($start_date)->startOfDay();
             $end = Carbon::parse($end_date)->endOfDay();
         }
-
-        // 2. Ambil Data Berdasarkan Kategori yang diklik user
         switch ($category) {
             case 'purchase':
                 $query = Purchase::with(['purchaseItems.product','supplier','warehouse']);
@@ -73,22 +69,15 @@ class ReportController extends Controller
                 $query = Purchase::with(['purchaseItems.product','supplier','warehouse']);
                 $title = "Report";
         }
-
-        // 3. Terapkan Filter Tanggal jika ada (kecuali Stock biasanya semua data)
         if ($start && $end && $category != 'stock') {
             $query->whereBetween('date', [$start, $end]);
         }
 
         $reports = $query->get();
-
-        // 4. Generate PDF
-        // Kita gunakan view sederhana untuk tes
         $pdf = Pdf::loadView('admin.backend.report.report_pdf_view', compact('reports', 'title', 'category'));
-        
+
         return $pdf->download('Report_'.$category.'_'.date('Ymd').'.pdf');
     }
-
-    // ... (Method FilterPurchases, SaleReport, dll tetap sama di bawah ini) ...
     public function FilterPurchases(Request $request){
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
@@ -104,12 +93,12 @@ class ReportController extends Controller
 
     public function PurchaseReturnReport(){
         $returnPurchases = ReturnPurchase::with(['purchaseItems.product','supplier','warehouse'])->get();
-        return view('admin.backend.report.purchase_return_report',compact('returnPurchases')); 
+        return view('admin.backend.report.purchase_return_report',compact('returnPurchases'));
     }
 
     public function SaleReport(){
         $saleReports = Sale::with(['saleItems.product','customer','warehouse'])->get();
-        return view('admin.backend.report.sale_report',compact('saleReports')); 
+        return view('admin.backend.report.sale_report',compact('saleReports'));
     }
 
     public function FilterSales(Request $request){
@@ -127,7 +116,7 @@ class ReportController extends Controller
 
     public function SaleReturnReport(){
         $returnSales = SaleReturn::with(['saleReturnItems.product','customer','warehouse'])->get();
-        return view('admin.backend.report.sales_return_report',compact('returnSales')); 
+        return view('admin.backend.report.sales_return_report',compact('returnSales'));
     }
 
     public function ProductStockReport(){

@@ -9,19 +9,19 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Edit Penyesuaian Stok</h4><br>
-                        
+
                         <form method="post" action="{{ route('update.stock.opname') }}">
                             @csrf
                             <input type="hidden" name="id" value="{{ $stock_opname->id }}">
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">Tanggal SO</label>
                                 <div class="col-sm-10">
                                     <input name="tanggal_so" class="form-control" type="date" value="{{ $stock_opname->tanggal_so }}">
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">Data Produk</label>
                                 <div class="col-sm-10">
                                     <select name="product_id" id="product_id" class="form-select select2">
@@ -33,42 +33,42 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">Stok Sistem</label>
                                 <div class="col-sm-10">
                                     <input name="stok_sistem" id="stok_sistem" class="form-control" type="number" value="{{ $stock_opname->stok_sistem }}" readonly style="background-color: #f0f0f0;">
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label text-success">Qty Tambah (+)</label>
                                 <div class="col-sm-10">
                                     <input name="qty_tambah" id="qty_tambah" class="form-control" type="number" value="{{ $stock_opname->qty_tambah }}">
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label text-danger">Qty Kurang (-)</label>
                                 <div class="col-sm-10">
                                     <input name="qty_kurang" id="qty_kurang" class="form-control" type="number" value="{{ $stock_opname->qty_kurang }}">
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">Total Stok Fisik Akhir</label>
                                 <div class="col-sm-10">
                                     <input id="total_stok" class="form-control" type="number" value="{{ $stock_opname->stok_fisik }}" readonly style="background-color: #f0f0f0;">
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">Alasan</label>
                                 <div class="col-sm-10">
                                     <textarea name="alasan" class="form-control" rows="3">{{ $stock_opname->alasan }}</textarea>
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">Status SO</label>
                                 <div class="col-sm-10">
                                     <select name="status" class="form-select">
@@ -89,7 +89,7 @@
 
 <script>
     $(document).ready(function(){
-        // Hitung otomatis saat angka berubah
+
         $('#qty_tambah, #qty_kurang').on('input', function(){
             let sistem = parseFloat($('#stok_sistem').val()) || 0;
             let tambah = parseFloat($('#qty_tambah').val()) || 0;
@@ -97,7 +97,7 @@
             $('#total_stok').val(sistem + tambah - kurang);
         });
 
-        // Update stok sistem saat produk diganti
+
         $('#product_id').change(function(){
             let selected = $(this).find('option:selected');
             let stok = selected.data('stok');

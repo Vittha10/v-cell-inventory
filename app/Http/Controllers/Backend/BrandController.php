@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Backend;
- 
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Brand;
@@ -17,12 +17,11 @@ class BrandController extends Controller
         $brand = Brand::latest()->get();
         return view('admin.backend.brand.all_brand',compact('brand'));
     }
-    //End Method 
 
-    public function AddBrand(){ 
+
+    public function AddBrand(){
         return view('admin.backend.brand.add_brand');
     }
-    //End Method
 
     public function StoreBrand(Request $request){
 
@@ -37,17 +36,15 @@ class BrandController extends Controller
            Brand::create([
                 'name' => $request->name,
                 'image' => $save_url
-           ]);  
+           ]);
         }
 
         $notification = array(
             'message' => 'Brand Inserted Successfully',
             'alert-type' => 'success'
-         ); 
-         return redirect()->route('all.brand')->with($notification);  
+         );
+         return redirect()->route('all.brand')->with($notification);
     }
-    //End Method
-
     public function EditBrand($id){
         if (!auth()->user()->hasPermissionTo('edit.brand')) {
             abort(403, 'Unauthorized Action');
@@ -56,7 +53,6 @@ class BrandController extends Controller
         return view('admin.backend.brand.edit_brand',compact('brand'));
 
     }
-     //End Method
 
 
      public function UpdateBrand(Request $request){
@@ -79,28 +75,28 @@ class BrandController extends Controller
            Brand::find($brand_id)->update([
                 'name' => $request->name,
                 'image' => $save_url
-           ]);  
+           ]);
 
            $notification = array(
             'message' => 'Brand Updated with image Successfully',
             'alert-type' => 'success'
-         ); 
-          return redirect()->route('all.brand')->with($notification); 
- 
+         );
+          return redirect()->route('all.brand')->with($notification);
+
         } else {
 
             Brand::find($brand_id)->update([
-                'name' => $request->name, 
-           ]);  
+                'name' => $request->name,
+           ]);
 
            $notification = array(
             'message' => 'Brand Updated without image Successfully',
             'alert-type' => 'success'
-         ); 
-          return redirect()->route('all.brand')->with($notification); 
- 
-        } 
-         
+         );
+          return redirect()->route('all.brand')->with($notification);
+
+        }
+
     }
     //End Method
 
@@ -114,8 +110,8 @@ class BrandController extends Controller
         $notification = array(
             'message' => 'Brand Deleted Successfully',
             'alert-type' => 'success'
-         ); 
-          return redirect()->back()->with($notification); 
+         );
+          return redirect()->back()->with($notification);
     }
      //End Method
 

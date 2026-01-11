@@ -243,8 +243,7 @@ Route::controller(RoleController::class)->group(function(){
 
 Route::get('/report/download-pdf', [App\Http\Controllers\Backend\ReportController::class, 'DownloadPdf'])->name('report.download.pdf');
 
-// Tambahkan ini di dalam group controller Anda
-Route::get('/return/details/{id}', [ReturnController::class, 'DetailsReturn'])->name('details.return');
+Route::get('/purchase/product/search', [SaleController::class, 'PurchaseProductSearch'])->name('purchase.product.search');
 
 });
 

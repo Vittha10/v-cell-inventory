@@ -1,11 +1,11 @@
 @extends('admin.admin_master')
 @section('admin')
 
-<div class="page-content m-2">
+<div class="m-2 page-content">
     <div class="container">
          @include('admin.backend.report.body.report_top')
     </div>
-     {{-- /// end Container  --}}
+
 
      <div class="card">
 
@@ -15,10 +15,10 @@
       @include('admin.backend.report.body.report_menu')
 </div>
 @include('admin.backend.report.body.report_filter')
- 
 
-            </div> 
-        </nav> 
+
+            </div>
+        </nav>
 
     <div class="card-body">
         <div class="table-responsive">
@@ -36,12 +36,12 @@
                         <th>Quantity</th>
                         <th>Unti Price</th>
                         <th>Status</th>
-                        <th>Grand Total</th> 
+                        <th>Grand Total</th>
                     </tr>
                 </thead>
             <tbody>
-            @foreach ($returnSales as $key=> $sales) 
-            @foreach ($sales->saleReturnItems as $item) 
+            @foreach ($returnSales as $key=> $sales)
+            @foreach ($sales->saleReturnItems as $item)
                 <tr>
                     <td>{{ $key+1 }}</td>
                     <td>{{ $sales->date }}</td>
@@ -51,7 +51,7 @@
                     <td>{{ $item->quantity ?? 'N/A'}}</td>
                     <td>{{ $item->net_unit_cost ?? 'N/A'}}</td>
                     <td>{{ $sales->status ?? 'N/A' }}</td>
-                    <td>{{ $sales->grand_total ?? 'N/A' }}</td> 
+                    <td>{{ $sales->grand_total ?? 'N/A' }}</td>
                 </tr>
                 @endforeach
                 @endforeach
@@ -73,10 +73,9 @@
 
 
      </div>
-     {{-- /// End Card --}} 
 
-</div> 
+</div>
 
- 
- 
+
+
 @endsection

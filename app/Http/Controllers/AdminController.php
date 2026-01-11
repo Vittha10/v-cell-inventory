@@ -12,12 +12,11 @@ class AdminController extends Controller
     public function AdminLogout(Request $request){
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate(); 
+        $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect('/login');
     }
-    // End Method 
 
     public function AdminProfile(){
         $id = Auth::user()->id;
@@ -25,7 +24,6 @@ class AdminController extends Controller
         return view('admin.admin_profile',compact('profileData'));
 
     }
-     // End Method 
 
      public function ProfileStore(Request $request){
      $id = Auth::user()->id;
@@ -46,7 +44,7 @@ class AdminController extends Controller
 
        if ($oldPhotoPath && $oldPhotoPath !== $filename) {
         $this->deleteOldImage($oldPhotoPath);
-       }            
+       }
      }
 
      $data->save();
@@ -59,7 +57,6 @@ class AdminController extends Controller
      return redirect()->back()->with($notification);
 
     }
-      // End Method
 
     private function deleteOldImage(string $oldPhotoPath) : void {
         $fullPath = public_path('upload/user_images/'.$oldPhotoPath);
@@ -67,7 +64,6 @@ class AdminController extends Controller
             unlink($fullPath);
         }
     }
-     // End private Method
 
      public function AdminPasswordUpdate(Request $request){
 
@@ -78,16 +74,16 @@ class AdminController extends Controller
         ]);
 
         if (!Hash::check($request->old_password, $user->password)) {
-            
+
             $notification = array(
                 'message' => 'Old Password Does not Match!',
                 'alert-type' => 'error'
-             ); 
+             );
              return back()->with($notification);
         }
 
         User::whereId($user->id)->update([
-            'password' => Hash::make($request->new_password) 
+            'password' => Hash::make($request->new_password)
         ]);
 
         Auth::logout();
@@ -95,12 +91,11 @@ class AdminController extends Controller
         $notification = array(
             'message' => 'Password Updated Successfully',
             'alert-type' => 'success'
-         ); 
-         return redirect()->route('login')->with($notification); 
+         );
+         return redirect()->route('login')->with($notification);
 
      }
-     // End Method
 
-    
+
 
 }

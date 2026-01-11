@@ -104,7 +104,7 @@
                       </td>
                    </tr>
 
-                   <!-- new add full paid functionality  -->
+
                    <tr class="d-none">
                       <td class="py-3">Full Paid</td>
                       <td class="py-3" id="fullPaid">

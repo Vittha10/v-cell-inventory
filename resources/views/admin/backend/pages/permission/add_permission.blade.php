@@ -4,7 +4,7 @@
 
 <div class="content">
 
-    <!-- Start Content-->
+
     <div class="container-xxl">
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -14,27 +14,26 @@
 
             <div class="text-end">
                 <ol class="breadcrumb m-0 py-0">
-                    
+
                     <li class="breadcrumb-item active">Add Permission</li>
                 </ol>
             </div>
         </div>
 
-        <!-- Form Validation -->
+
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Add Permission</h5>
-                    </div><!-- end card header -->
-
+                    </div>
 <div class="card-body">
     <form action="{{ route('store.permission') }}" method="post" class="row g-3" enctype="multipart/form-data">
         @csrf
 
         <div class="col-md-6">
             <label for="validationDefault01" class="form-label">Permission Name</label>
-            <input type="text" class="form-control" name="name"  > 
+            <input type="text" class="form-control" name="name"  >
         </div>
 
         <div class="col-md-6">
@@ -51,26 +50,25 @@
                 <option value="Due">Due</option>
                 <option value="Transfers">Transfers</option>
                 <option value="Report">Report</option>
-                 
+
             </select>
-        </div> 
-            
+        </div>
+
         <div class="col-12">
             <button class="btn btn-primary" type="submit">Save Change</button>
         </div>
     </form>
-</div> <!-- end card-body -->
-                </div> <!-- end card-->
-            </div> <!-- end col -->
+</div>
+                </div>
+            </div>
 
-          
         </div>
 
-        
 
-    </div> <!-- container-fluid -->
+
+    </div>
 
 </div>
- 
+
 
 @endsection

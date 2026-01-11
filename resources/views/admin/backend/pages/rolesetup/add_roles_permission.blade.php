@@ -10,7 +10,7 @@
 
 <div class="content">
 
-    <!-- Start Content-->
+
     <div class="container-xxl">
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -20,19 +20,19 @@
 
             <div class="text-end">
                 <ol class="breadcrumb m-0 py-0">
-                    
+
                     <li class="breadcrumb-item active">Role In Permission</li>
                 </ol>
             </div>
         </div>
 
-        <!-- Form Validation -->
+
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Role In Permission</h5>
-                    </div><!-- end card header -->
+                    </div>
 
 <div class="card-body">
     <form action="{{ route('role.permission.store') }}" method="post" class="row g-3" enctype="multipart/form-data">
@@ -42,16 +42,16 @@
             <label for="validationDefault01" class="form-label">Role Name </label>
             <select name="role_id" class="form-select" id="example-select">
                 <option value="" selected>Select Role</option>
-                 @foreach ($roles as $role) 
-                <option value="{{ $role->id }}">{{ $role->name }}</option> 
+                 @foreach ($roles as $role)
+                <option value="{{ $role->id }}">{{ $role->name }}</option>
                   @endforeach
             </select>
-        </div> 
+        </div>
 
     <div class="form-check mb-2">
     <input class="form-check-input" type="checkbox" id="formCheck1">
     <label class="form-check-label" for="formCheck1">
-     Permission All 
+     Permission All
     </label>
     </div>
 
@@ -64,7 +64,7 @@
     <label class="form-check-label" for="flexCheckDefault">
      {{ $group->group_name }}
     </label>
-    </div> 
+    </div>
         </div>
 
 
@@ -73,41 +73,40 @@
         $permissions = App\Models\User::getpermissionByGroupName($group->group_name)
     @endphp
 
-    @foreach ($permissions as $permission) 
+    @foreach ($permissions as $permission)
      <div class="form-check mb-2">
     <input class="form-check-input" name="permission[]" value="{{ $permission->id }}" type="checkbox" id="flexCheckDefault{{ $permission->id }}">
     <label class="form-check-label" for="flexCheckDefault{{ $permission->id }}">
      {{ $permission->name }}
     </label>
-    </div> 
+    </div>
      @endforeach
-     <br> 
+     <br>
 
-      </div>  
-    </div> 
-    {{-- // End Row --}}
-        
+      </div>
+    </div>
+
     @endforeach
-         
-        
-            
+
+
+
         <div class="col-12">
             <button class="btn btn-primary" type="submit">Save Change</button>
         </div>
     </form>
-</div> <!-- end card-body -->
-                </div> <!-- end card-->
-            </div> <!-- end col -->
+</div>
+                </div>
+            </div>
 
-          
+
         </div>
 
-        
+
 
     </div> <!-- container-fluid -->
 
 </div>
- 
+
 <script>
     $('#formCheck1').click(function(){
         if($(this).is(':checked')){

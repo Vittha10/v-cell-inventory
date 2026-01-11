@@ -17,12 +17,11 @@ class WareHouseController extends Controller
         $warehouse = WareHouse::latest()->get();
         return view('admin.backend.warehouse.all_warehouse',compact('warehouse'));
     }
-    //End Method 
 
-    public function AddWarehouse(){ 
+    public function AddWarehouse(){
         return view('admin.backend.warehouse.add_warehouse');
     }
-    //End Method 
+
 
     public function StoreWarehouse(Request $request){
 
@@ -43,17 +42,16 @@ class WareHouseController extends Controller
         $notification = array(
             'message' => 'WareHouse Inserted Successfully',
             'alert-type' => 'success'
-         ); 
+         );
          return redirect()->route('all.warehouse')->with($notification);
 
     }
-    //End Method 
 
     public function EditWarehouse($id){
         $warehouse = WareHouse::find($id);
         return view('admin.backend.warehouse.edit_warehouse',compact('warehouse'));
     }
-     //End Method 
+
 
 
      public function UpdateWarehouse(Request $request){
@@ -76,11 +74,10 @@ class WareHouseController extends Controller
         $notification = array(
             'message' => 'WareHouse Updated Successfully',
             'alert-type' => 'success'
-         ); 
+         );
          return redirect()->route('all.warehouse')->with($notification);
 
     }
-    //End Method 
 
     public function DeleteWarehouse($id){
 
@@ -89,10 +86,9 @@ class WareHouseController extends Controller
         $notification = array(
             'message' => 'WareHouse Deleted Successfully',
             'alert-type' => 'success'
-         ); 
-         return redirect()->back()->with($notification); 
+         );
+         return redirect()->back()->with($notification);
     }
-    //End Method 
 
 
 }

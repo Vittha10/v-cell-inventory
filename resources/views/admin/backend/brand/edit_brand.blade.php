@@ -4,7 +4,7 @@
 
 <div class="content">
 
-    <!-- Start Content-->
+
     <div class="container-xxl">
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -14,24 +14,24 @@
 
             <div class="text-end">
                 <ol class="breadcrumb m-0 py-0">
-                    
+
                     <li class="breadcrumb-item active">Edit Brand</li>
                 </ol>
             </div>
         </div>
 
-        <!-- Form Validation -->
+
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Edit Brand</h5>
-                    </div><!-- end card header -->
+                    </div>
 
     <div class="card-body">
         <form action="{{ route('update.brand') }}" method="post" class="row g-3" enctype="multipart/form-data">
          @csrf
-         
+
         <input type="hidden" name="id" value="{{ $brand->id }}" >
 
             <div class="col-md-12">
@@ -47,21 +47,21 @@
                 <label for="validationDefault02" class="form-label"> </label>
                 <img id="showImage" src="{{ asset($brand->image) }}" class="rounded-circle avatar-xl img-thumbnail float-start" alt="image profile">
             </div>
-              
+
             <div class="col-12">
                 <button class="btn btn-primary" type="submit">Save Change</button>
             </div>
         </form>
-    </div> <!-- end card-body -->
-                </div> <!-- end card-->
-            </div> <!-- end col -->
+    </div>
+                </div>
+            </div>
 
-          
+
         </div>
 
-        
 
-    </div> <!-- container-fluid -->
+
+    </div>
 
 </div>
 

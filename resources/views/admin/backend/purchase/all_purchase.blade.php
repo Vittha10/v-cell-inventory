@@ -40,7 +40,7 @@
     <tr>
         <td>{{ $key+1 }}</td>
 
-        {{-- Menampilkan Nama Warehouse secara dinamis --}}
+
         <td>{{ $item->warehouse->name ?? 'Pontianak' }}</td>
 
         <td>
@@ -51,12 +51,11 @@
             @endif
         </td>
 
-        {{-- 1. Mengubah Grand Total menjadi Jumlah Barang (Stok yang masuk) --}}
+
         <td class="fw-bold text-primary">
     {{ $item->purchaseItems->sum('quantity') }} Item
 </td>
 
-        {{-- 2. BARIS PAYMENT (CASH) SUDAH DIHAPUS DI SINI --}}
 
         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</td>
 

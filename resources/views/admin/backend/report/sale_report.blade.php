@@ -1,11 +1,11 @@
 @extends('admin.admin_master')
 @section('admin')
 
-<div class="page-content m-2">
+<div class="m-2 page-content">
     <div class="container">
-        @include('admin.backend.report.body.report_top')  
+        @include('admin.backend.report.body.report_top')
     </div>
-     {{-- /// end Container  --}}
+
 
      <div class="card">
 
@@ -18,39 +18,22 @@
 
 @include('admin.backend.report.body.report_filter')
 
-{{-- /// Date rang filter  --}}
-{{--  
-<div class="row">
-    <div class="col-md-12 d-flex align-items-center position-relative">
-        <select id="date-range" class="form-control large-select">
-            <option value="" selected disabled>Select Date Range</option>
-            <option value="today">Today</option>
-            <option value="this_week">This Week</option>
-            <option value="last_week">Last Week</option>
-            <option value="this_month">This Month</option>
-            <option value="last_month">Last Month</option>
-            <option value="custom">Custom Range</option> 
-        </select>
-        
-    </div>
-    --}}
 
-    {{-- // Custom date field  --}}
-    <div class="dropdown-menu p-3 custom-dropdown position-absolute shadow bg-white">
+    <div class="p-3 bg-white shadow dropdown-menu custom-dropdown position-absolute">
         <label for="custom-start-date">Start Date:</label>
-        <input type="date" id="custom-start-date" class="form-control mb-2">
+        <input type="date" id="custom-start-date" class="mb-2 form-control">
 
         <label for="custom-end-date">End Date:</label>
-        <input type="date" id="custom-end-date" class="form-control mb-2">
+        <input type="date" id="custom-end-date" class="mb-2 form-control">
 
-        <button id="apply-filter" class="btn btn-primary w-100">Apply</button> 
-    </div> 
+        <button id="apply-filter" class="btn btn-primary w-100">Apply</button>
+    </div>
 </div>
-{{-- /// End Date rang filter  --}} 
 
 
-            </div> 
-        </nav> 
+
+            </div>
+        </nav>
 
     <div class="card-body">
         <div class="table-responsive">
@@ -68,12 +51,12 @@
                         <th>Quantity</th>
                         <th>Unti Price</th>
                         <th>Status</th>
-                        <th>Grand Total</th> 
+                        <th>Grand Total</th>
                     </tr>
                 </thead>
             <tbody>
-            @foreach ($saleReports as $key=> $report) 
-            @foreach ($report->saleItems as $item) 
+            @foreach ($saleReports as $key=> $report)
+            @foreach ($report->saleItems as $item)
                 <tr>
                     <td>{{ $key+1 }}</td>
                     <td>{{ $report->date }}</td>
@@ -83,7 +66,7 @@
                     <td>{{ $item->quantity ?? 'N/A'}}</td>
                     <td>{{ $item->net_unit_cost ?? 'N/A'}}</td>
                     <td>{{ $report->status ?? 'N/A' }}</td>
-                    <td>{{ $report->grand_total ?? 'N/A' }}</td> 
+                    <td>{{ $report->grand_total ?? 'N/A' }}</td>
                 </tr>
                 @endforeach
                 @endforeach
@@ -105,32 +88,31 @@
 
 
      </div>
-     {{-- /// End Card --}} 
 
-</div> 
+</div>
 
 <style>
-    /* Ensure the navbar container is a positioning context */
+
     .navbar .container-fluid {
         position: relative;
     }
 
-    /* Style the filter container */
+
     .filter-container {
         position: relative;
         display: inline-block;
-        width: 200px; /* Adjust width to fit the select */
+        width: 200px;
         margin-left: 10px;
     }
 
-    /* Style the select element */
+
     .large-select {
-        background-color: #343a40; /* Match navbar background */
+        background-color: #343a40;
         color: white;
         border: 1px solid #495057;
         padding: 5px 10px;
         width: 100%;
-        appearance: none; /* Remove default dropdown arrow */
+        appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
@@ -139,31 +121,31 @@
         background-size: 12px;
     }
 
-    /* Style the filter icon */
+
     .mdi-filter-menu {
         position: absolute;
         right: 30px;
         top: 50%;
         transform: translateY(-50%);
         color: white;
-        pointer-events: none; /* Prevent icon from interfering with select */
+        pointer-events: none;
     }
 
-    /* Style the custom dropdown */
+
     .custom-dropdown {
-        display: none; /* Initially hidden */
+        display: none;
         position: absolute;
-        top: 100%; /* Position below the select */
-        right: 0; /* Align to the right of the filter container */
-        width: 250px; /* Fixed width for consistency */
+        top: 100%;
+        right: 0;
+        width: 250px;
         background-color: #fff;
         border: 1px solid #ddd;
         border-radius: 4px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000; /* Ensure it appears above other elements */
+        z-index: 1000;
     }
 
-    /* Ensure the dropdown fits within the navbar on smaller screens */
+
     @media (max-width: 991px) {
         .filter-container {
             width: 100%;
@@ -184,14 +166,14 @@
         let selectedValue = this.value;
         let today = new Date();
         let startDate, endDate;
-    
+
         if (selectedValue === "custom") {
             document.querySelector('.custom-dropdown').style.display = "block";
             return;
         } else {
             document.querySelector('.custom-dropdown').style.display = "none";
         }
-    
+
         switch (selectedValue) {
             case "today":
                 startDate = formatDate(today);
@@ -222,22 +204,22 @@
             default:
                 return;
         }
-    
-        // Fetch data via AJAX
+
+
         fetchFilteredData(startDate, endDate);
     });
-    
+
     document.getElementById("apply-filter").addEventListener("click", function () {
         let startDate = document.getElementById("custom-start-date").value;
         let endDate = document.getElementById("custom-end-date").value;
-    
+
         if (startDate && endDate) {
             fetchFilteredData(startDate, endDate);
         } else {
             alert("Please select both start and end dates.");
         }
     });
-    
+
     function fetchFilteredData(startDate, endDate) {
         fetch(`/filter-sales?start_date=${startDate}&end_date=${endDate}`, {
             headers: {
@@ -251,16 +233,16 @@
         })
         .catch(error => console.error('Error fetching data:', error));
     }
-    
+
     function updateTable(sales) {
         let tbody = document.querySelector("#example tbody");
-        tbody.innerHTML = ""; // Clear existing rows
-    
+        tbody.innerHTML = "";
+
         sales.forEach(sale => {
             sale.sale_items.forEach(item => {
-                // Ensure net_unit_cost is a number, default to 0 if null/undefined
+
                 const netUnitCost = item.net_unit_cost ? parseFloat(item.net_unit_cost) : 0;
-    
+
                 let row = `
                     <tr>
                         <td>${sale.id}</td>
@@ -278,11 +260,11 @@
             });
         });
     }
-    
+
     function formatDate(date) {
         return date.toISOString().split("T")[0];
     }
-    
+
     function getWeekStart(date) {
         let d = new Date(date);
         d.setDate(d.getDate() - d.getDay());
