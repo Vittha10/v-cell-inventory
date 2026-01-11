@@ -41,7 +41,7 @@
                         <tr>
                             <td>{{ $key+1 }}</td> 
                             
-                            {{-- 1. Mengubah Warehouse menjadi Pontianak secara manual --}}
+                            
                             <td>Pontianak</td>
                             
                             <td>

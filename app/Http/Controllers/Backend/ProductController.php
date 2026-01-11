@@ -164,9 +164,7 @@ class ProductController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    /* ========================= STOCK OPNAME (FITUR BARU) ========================= */
 
-    // List Riwayat Stock Opname (Halaman Depan)
     public function StockOpname(){
         $stock_history = DB::table('stock_opnames')
                         ->join('products', 'stock_opnames.product_id', '=', 'products.id')
@@ -177,13 +175,13 @@ class ProductController extends Controller
         return view('admin.backend.product.stock_opname_list', compact('stock_history'));
     }
 
-    // Form Tambah Stock Opname
+
     public function AddStockOpname(){
         $products = Product::latest()->get();
         return view('admin.backend.product.stock_opname_add', compact('products'));
     }
 
-    // Simpan Data Stock Opname
+
     public function StoreStockOpname(Request $request){
         $product = Product::findOrFail($request->product_id);
         
@@ -205,7 +203,7 @@ class ProductController extends Controller
             'created_at' => now(),
         ]);
 
-        // Stok Produk terupdate otomatis jika status 'Approved'
+
         if ($request->status == 'Approved') {
             $product->update([
                 'product_qty' => $stok_fisik_akhir
